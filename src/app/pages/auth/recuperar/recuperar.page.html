@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-back-button defaultHref="/login" text="Volver"></ion-back-button></ion-buttons>
+    <ion-title>Recuperar contraseña</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (!codigoPedido()) {
+  <form class="formulario" (submit)="$event.preventDefault(); pedir()">
+    <p>Enviaremos un código al correo registrado con tu cédula.</p>
+    <ion-input
+      label="Cédula"
+      labelPlacement="stacked"
+      fill="outline"
+      inputmode="numeric"
+      [maxlength]="10"
+      [formControl]="cedula"
+      errorText="Ingresa una cédula válida de 10 dígitos."
+    ></ion-input>
+    <ion-button expand="block" type="submit" [disabled]="estado().fase === 'cargando'">
+      @if (estado().fase === 'cargando') {
+      <ion-spinner aria-label="Enviando"></ion-spinner>
+      } @else { Enviar código }
+    </ion-button>
+  </form>
+  } @else {
+  <form class="formulario" [formGroup]="form" (ngSubmit)="cambiar()">
+    <p>Si la cédula está registrada, recibirás un código de 6 dígitos en tu correo.</p>
+    <ion-input
+      label="Código"
+      labelPlacement="stacked"
+      fill="outline"
+      inputmode="numeric"
+      autocomplete="one-time-code"
+      [maxlength]="6"
+      formControlName="codigo"
+      errorText="Ingresa los 6 dígitos."
+    ></ion-input>
+    <ion-input
+      label="Nueva contraseña"
+      labelPlacement="stacked"
+      fill="outline"
+      type="password"
+      autocomplete="new-password"
+      formControlName="nueva"
+      errorText="Usa al menos 8 caracteres y no la contraseña inicial."
+    >
+      <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+    </ion-input>
+    <ion-button expand="block" type="submit" [disabled]="estado().fase === 'cargando'">
+      @if (estado().fase === 'cargando') {
+      <ion-spinner aria-label="Guardando"></ion-spinner>
+      } @else { Cambiar contraseña }
+    </ion-button>
+    <ion-button expand="block" fill="clear" (click)="codigoPedido.set(false)">Pedir otro código</ion-button>
+  </form>
+  }
+</ion-content>

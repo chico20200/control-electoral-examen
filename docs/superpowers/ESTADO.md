@@ -29,8 +29,8 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | 1 | Proyecto base | ✅ | 034e2d8 |
 | 2 | Base de datos, RLS y RPC | ✅ | 92f4225 |
 | 3 | Edge Functions de cuentas | ✅ | c7c6c42 |
-| 4 | Validadores | 🟡 | |
-| 5 | Acceso, guards y navegación | ⬜ | |
+| 4 | Validadores | ✅ | 81d48a7 |
+| 5 | Acceso, guards y navegación | 🟡 | |
 | 6 | Coordinadores | ⬜ | |
 | 7 | Captura y actas | ⬜ | |
 | 8 | Dashboard provincial | ⬜ | |
@@ -66,6 +66,9 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | D23 | 2026-11-24 | Por ahora `.claude/`, el plan y ESTADO se suben a git; solo `DEFENSA.md` queda fuera. Se corrige al final | Pedido del estudiante; reemplaza D15 y D19 | Acordada (provisional) |
 | D24 | 2026-11-24 | `enteroNoNegativo` acepta como máximo 6 cifras | Mismo rango que `guardar_acta` | Acordada (técnica) |
 | D25 | 2026-11-24 | `totalesValidator` no informa error mientras falte o sea inválido un campo | Evita dos mensajes por el mismo problema; `enteroNoNegativo` ya bloquea el formulario | Acordada (técnica) |
+| D26 | 2026-11-24 | La app abre con el perfil guardado y lo comprueba en segundo plano; sin red lo conserva, y si el servidor lo rechaza cierra la sesión | Abrir sin red (R10); la copia local no autoriza nada | Acordada (técnica) |
+| D27 | 2026-11-24 | `scripts/cuentas-prueba-local.mjs` crea o reinicia una cuenta por rol y rechaza cualquier servidor que no sea local | Probar los tres roles antes de la tarea 6 | Acordada (técnica) |
+| D28 | 2026-11-24 | Una pantalla de inicio común por rol, provisional; se quitó `home` | Las tareas 6 a 8 agregan sus opciones | Acordada (técnica) |
 
 Si una decisión contradice un ADR aceptado, se escribe un ADR de reemplazo en `docs/adr/`.
 
@@ -190,18 +193,28 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 ### Tarea 5: Acceso, guards y navegación
 
-**Archivos entregados:** _pendiente_
+**Archivos entregados:** en `src/app`: `core/data/{supabase.client,auth.repo}.ts`, `core/services/{auth,notificacion}.service.ts` y `mensajes.ts`, `core/guards/` (4), `core/models/error-app.ts`, `core/validators/clave.validator.ts`, `shared/components/estado-vista/`, `pages/auth/` (3), `pages/inicio/`, `app.routes.ts`, `app.component.ts` y sus specs. Además `src/environments/`, `src/main.ts`, `src/index.html`, `src/global.scss` y `scripts/cuentas-prueba-local.mjs`. Se eliminó `src/app/home/`.
 
-**Pruebas automáticas (agente):** _pendiente_
+**Pruebas automáticas (agente), 2026-11-24:** RED: no compila, faltan los módulos. `clave.validator` se escribió junto con su prueba, sin RED previo · primer intento 66/67: mi prueba creaba dos veces el arnés de navegación; corregida · lint: 10 errores de orden de importaciones, corregidos · GREEN 67/67, lint y build correctos. Sabotajes: guard de rol abierto (4 fallan), sin cambio obligatorio (1), sesión siempre válida (1; el primer intento no compilaba), respuesta tardía que revive la sesión (1), cerrar sesión por falta de red: **no se detectó**, se reforzó la prueba y ahora falla 1. Restaurado: 67/67. Recorrido en Chromium contra Supabase local: 15/15 comprobaciones; la cuenta temporal se borró. `@supabase/supabase-js` solo aparece en `core/data`, y ninguna página importa repositorios. La nube no se ha tocado.
+
+**Para qué sirve:** demuestra el acceso con cédula, el cambio obligatorio de la clave inicial y la recuperación por correo (R3), que cada rol solo navega por sus pantallas y que hay carga, éxito, error y validación visibles (R9).
+
+**Cómo está construida:** los specs usan un repositorio falso (`vi.fn()`), así se provocan fallos de red o de sesión a voluntad; los guards se prueban navegando de verdad con `RouterTestingHarness` y mirando la URL final. Tu prueba manual recorre lo mismo contra el servidor local.
+
+**Por qué es fiable:** hay casos positivos (cada rol sí entra en su pantalla) y negativos; los sabotajes los hacen fallar; el recorrido en navegador usa el servidor y los correos reales del entorno local.
+
+**Qué no cubre:** la protección de los datos, que es de la RLS (tarea 2): los guards solo orientan la navegación. Tampoco el teléfono ni la nube (tareas 7 y 10): el build de producción aún no tiene la URL de la nube. La copia local del perfil podría alterarse, pero el servidor no la usa.
 
 **Tu prueba:**
-1. Entrar con Ecuador2026: debe exigir cambio de clave.
-2. Como veedor, escribir la URL de provincial.
-3. Recuperar la clave con el código.
+1. Ejecutar `node scripts/cuentas-prueba-local.mjs` (crea o reinicia las cuentas) y `npx ionic serve`.
+2. Entrar como veedor (`3010034068` / clave incorrecta): error. Luego con `Ecuador2026`: debe exigir cambio de clave; `Ecuador2026` como nueva debe rechazarse; poner otra.
+3. Como veedor, escribir `http://localhost:8100/provincial`: debe volver a `/veedor`.
+4. Cerrar sesión, «Olvidé mi contraseña», y usar el código de Mailpit (http://127.0.0.1:54324).
+5. Repetir el ingreso con `1710034065` (provincial) y `2410034066` (recinto).
 
 **Se aprueba si / evidencia:** Cambio forzado, redirección y recuperación correctas.
 
-**Capturas recomendadas:** Cambio de clave obligatorio; URL antes y después de la redirección; error de credenciales.
+**Capturas recomendadas** (`docs/evidencias/tarea-05/`): `01-credenciales.png`, `02-cambio-obligatorio.png`, `03-url-antes.png`, `04-url-despues.png`, `05-codigo.png`.
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|

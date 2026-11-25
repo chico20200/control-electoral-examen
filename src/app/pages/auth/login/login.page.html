@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="primary"><ion-title>Control Electoral</ion-title></ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form class="formulario" [formGroup]="form" (ngSubmit)="entrar()">
+    <h1>Ingresar</h1>
+    <ion-input
+      label="Cédula"
+      labelPlacement="stacked"
+      fill="outline"
+      inputmode="numeric"
+      autocomplete="username"
+      [maxlength]="10"
+      formControlName="cedula"
+      errorText="Ingresa una cédula válida de 10 dígitos."
+    ></ion-input>
+    <ion-input
+      label="Contraseña"
+      labelPlacement="stacked"
+      fill="outline"
+      type="password"
+      autocomplete="current-password"
+      formControlName="clave"
+      errorText="Ingresa tu contraseña."
+    >
+      <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+    </ion-input>
+    <ion-button expand="block" type="submit" [disabled]="estado().fase === 'cargando'">
+      @if (estado().fase === 'cargando') {
+      <ion-spinner aria-label="Ingresando"></ion-spinner>
+      } @else { Ingresar }
+    </ion-button>
+    <ion-button expand="block" fill="clear" routerLink="/recuperar">Olvidé mi contraseña</ion-button>
+  </form>
+</ion-content>

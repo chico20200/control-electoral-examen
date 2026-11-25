@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary"><ion-title>Cambiar contraseña</ion-title></ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form class="formulario" [formGroup]="form" (ngSubmit)="guardar()">
+    @if (perfil()?.debeCambiarClave) {
+    <p>Es tu primer ingreso. Cambia la contraseña inicial para continuar.</p>
+    }
+    <ion-input
+      label="Nueva contraseña"
+      labelPlacement="stacked"
+      fill="outline"
+      type="password"
+      autocomplete="new-password"
+      formControlName="nueva"
+      errorText="Usa al menos 8 caracteres y no la contraseña inicial."
+    >
+      <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+    </ion-input>
+    <ion-input
+      label="Repetir contraseña"
+      labelPlacement="stacked"
+      fill="outline"
+      type="password"
+      autocomplete="new-password"
+      formControlName="repetir"
+      errorText="Las contraseñas no coinciden."
+    ></ion-input>
+    <ion-button expand="block" type="submit" [disabled]="estado().fase === 'cargando'">
+      @if (estado().fase === 'cargando') {
+      <ion-spinner aria-label="Guardando"></ion-spinner>
+      } @else { Guardar }
+    </ion-button>
+    <ion-button expand="block" fill="clear" (click)="cancelar()">
+      {{ perfil()?.debeCambiarClave ? 'Salir' : 'Cancelar' }}
+    </ion-button>
+  </form>
+</ion-content>
