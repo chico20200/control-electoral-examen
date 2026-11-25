@@ -40,6 +40,10 @@ export const routes: Routes = [
   privada('provincial', '/recintos/:id/coordinador', () =>
     import('./pages/provincial/coordinador-nuevo/coordinador-nuevo.page').then((m) => m.CoordinadorNuevoPage),
   ),
+  privada('provincial', '/resultados', () =>
+    import('./pages/provincial/dashboard/dashboard.page').then((m) => m.DashboardPage),
+  ),
+  privada('provincial', '/avance', () => import('./pages/provincial/avance/avance.page').then((m) => m.AvancePage)),
   privada('recinto', '', inicio),
   privada('recinto', '/mesas', () => import('./pages/recinto/mesas/mesas.page').then((m) => m.MesasPage)),
   privada('recinto', '/veedores', () => import('./pages/recinto/veedores/veedores.page').then((m) => m.VeedoresPage)),

@@ -12,7 +12,11 @@ const TITULOS: Record<Rol, string> = {
 };
 
 const OPCIONES: Record<Rol, { texto: string; ruta: string }[]> = {
-  provincial: [{ texto: 'Recintos', ruta: '/provincial/recintos' }],
+  provincial: [
+    { texto: 'Resultados', ruta: '/provincial/resultados' },
+    { texto: 'Avance y ubicaciones', ruta: '/provincial/avance' },
+    { texto: 'Recintos', ruta: '/provincial/recintos' },
+  ],
   recinto: [
     { texto: 'Mesas', ruta: '/recinto/mesas' },
     { texto: 'Veedores', ruta: '/recinto/veedores' },
@@ -20,7 +24,7 @@ const OPCIONES: Record<Rol, { texto: string; ruta: string }[]> = {
   veedor: [{ texto: 'Mis mesas', ruta: '/veedor/mesas' }],
 };
 
-/** Pantalla inicial por rol; la tarea 8 agrega el dashboard. */
+/** Pantalla inicial por rol. */
 @Component({
   selector: 'app-inicio',
   imports: [RouterLink, IonButton, IonContent, IonHeader, IonTitle, IonToolbar],

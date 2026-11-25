@@ -110,3 +110,41 @@ export interface Estado<T> {
   datos: T | null;
   error: string | null;
 }
+
+/** Votos de una candidatura en un recinto (vista `v_resultados`). */
+export interface FilaResultado {
+  recintoId: string;
+  dignidad: Dignidad;
+  candidaturaId: string;
+  candidato: string;
+  organizacion: string;
+  votos: number;
+}
+
+/** Porcentaje sobre los votos por candidatura; no incluye blancos ni nulos. */
+export type Resultado = Pick<FilaResultado, 'candidaturaId' | 'candidato' | 'organizacion' | 'votos'> & {
+  porcentaje: number;
+};
+
+export interface AvanceRecinto {
+  recintoId: string;
+  recinto: string;
+  registradas: number;
+  esperadas: number;
+}
+
+export interface ActaGps {
+  id: string;
+  recinto: string;
+  jrv: number;
+  dignidad: Dignidad;
+  lat: number;
+  lng: number;
+  precisionM: number;
+}
+
+export interface FiltroResultados {
+  dignidad: Dignidad;
+  /** `null`: consolidado provincial. */
+  recintoId: string | null;
+}

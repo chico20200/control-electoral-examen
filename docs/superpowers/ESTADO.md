@@ -32,8 +32,8 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | 4 | Validadores | ✅ | 81d48a7 |
 | 5 | Acceso, guards y navegación | ✅ | baa44a6 |
 | 6 | Coordinadores | 🟡 | |
-| 7 | Captura y actas | 🟡 | |
-| 8 | Dashboard provincial | ⬜ | |
+| 7 | Captura y actas | ✅ | 2d1caa3 |
+| 8 | Dashboard provincial | 🟡 | |
 | 9 | Offline y sincronización | ⬜ | |
 | 10 | Despliegue y entrega | ⬜ | |
 
@@ -75,6 +75,7 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | D32 | 2026-11-25 | Los votos a medio escribir se guardan en el teléfono por usuario, mesa y dignidad, y solo se recuperan si el acta sigue en la misma versión | Android puede cerrar la app al abrir la cámara | Acordada (técnica) |
 | D33 | 2026-11-25 | HTTP hacia `127.0.0.1` permitido solo en el APK debug | Probar por USB contra Supabase local; el APK final usará HTTPS | Acordada (técnica) |
 | D34 | 2026-11-25 | Adelantar el despliegue en la nube (tarea 10) y probar la tarea 7 contra ella | Pedido del estudiante; el ingreso local falló porque el contenedor de Edge Functions estaba detenido y la puerta de enlace respondía 503 | Acordada |
+| D35 | 2026-11-25 | El porcentaje se calcula sobre los votos por candidatura, sin blancos ni nulos, y se indica en pantalla | R4 no fija la base del cálculo | Acordada (técnica) |
 
 Si una decisión contradice un ADR aceptado, se escribe un ADR de reemplazo en `docs/adr/`.
 
@@ -290,26 +291,35 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 | 1 | 2026-11-25, hacia 08:30 | ❌ | Ingreso contra Supabase local: «error inesperado» (Edge Functions detenidas, 503). Se pasó a la nube | Reporte del estudiante y registro del servidor local |
 | 2 | 2026-11-25, 08:58–09:23 | ✅ con observaciones | En la nube: ingreso correcto; foto borrosa bloqueada (36) y nítida aceptada (267); totales 60/61 bloqueados; dos actas registradas con GPS; el coordinador corrigió ambas (versión 3), sin foto nueva. El estudiante informa que la nitidez está correcta y decidió no repetir los permisos denegados. Sin evidencia: permisos denegados en el teléfono y corrección con foto nueva | `docs/evidencias/tarea-07/` (7 capturas; `01` muestra credenciales incorrectas, no un permiso) y lectura de la base en la nube |
 
-**Commit sugerido:** `feat: registro y corrección de actas` · **Hash:** 
+**Commit sugerido:** `feat: registro y corrección de actas` · **Hash:** 2d1caa3
 
 ### Tarea 8: Dashboard provincial
 
-**Archivos entregados:** _pendiente_
+**Archivos entregados:** en `src/app`: `core/data/resultados.repo.ts`, `core/services/resultados.service.ts`, `pages/provincial/{dashboard,avance}/`, con specs de repositorio, servicio y dashboard. Modificados: rutas, inicio, modelos y `global.scss` (campos de votos a todo el ancho).
 
-**Pruebas automáticas (agente):** _pendiente_
+**Pruebas automáticas (agente), 2026-11-25:** RED: no compila, faltan los módulos · GREEN 137/137 a la primera · lint y compilación correctos. Seis sabotajes detectados: ignorar recinto (1 falla), mezclar dignidades (3), dividir por cero (1), no sumar recintos (1), mesa equivocada (1), perder el otro filtro (1). Restaurado: 137/137. Repositorio y servicio reales contra Supabase local: 8/8, con datos temporales borrados. En la nube, solo lectura: en las 10 candidaturas la vista coincide con la suma de votos, pero hay una sola mesa con actas. APK apuntando a la nube. Revisión de las 4 capturas del estudiante (10:57–10:58): alcalde 11, 12, 13, 14, 14 = 64, igual a lo esperado; otro recinto en 0 y 0.0 %; avance 4 de 10 con 4 coordenadas (el paso 4 preveía 3: también hay acta de prefecto en la mesa 2). Sin captura: prefecto consolidado, apertura del mapa y suma manual (el estudiante informa que la hizo).
+
+**Para qué sirve:** demuestra que el provincial ve votos por candidato, por recinto y consolidados, el avance y las coordenadas GPS (R4), y cubre la verificación 5 de ADR-004.
+
+**Cómo está construida:** los specs usan datos inventados con resultado conocido; el recorrido local inserta dos recintos con votos distintos y los compara con la suma. Tu prueba repite la suma a mano en la app.
+
+**Por qué es fiable:** el resultado esperado se calcula aparte, hay caso sin votos y con error, y los seis sabotajes hicieron fallar las pruebas.
+
+**Qué no cubre:** más de 1000 filas (límite de la API: unos 100 recintos) ni la actualización en vivo (se usa «Actualizar»).
 
 **Tu prueba:**
-1. Sumar a mano dos actas y comparar.
-2. Filtrar por recinto y consolidado.
+1. Instalar el APK. Como coordinador (`2410034066`), asignar la mesa 2 a Víctor Prueba; como veedor (`3010034068`), registrar el acta de **alcalde de la mesa 2** con votos 1, 2, 3, 4, 5, blancos 0, nulos 0, total 15.
+2. Entrar como provincial (`1710034065`, `Ecuador2026` si aún no la cambiaste) → Resultados → Alcalde, consolidado. Con la mesa 1 actual (10, 10, 10, 10, 9) debe dar 11, 12, 13, 14, 14 = 64.
+3. Filtrar por «Colegio Demo Calderón» (igual, 64) y por otro recinto (0 y 0.0 %, sin `NaN`). Cambiar a Prefecto (50).
+4. Avance: «Colegio Demo Calderón» 3 de 10. Coordenadas: tres actas; tocar una abre el mapa.
 
 **Se aprueba si / evidencia:** Totales iguales; anotar los números comparados.
 
-**Capturas recomendadas:** Dashboard consolidado y por recinto junto a la suma manual.
+**Capturas recomendadas** (`docs/evidencias/tarea-08/`): `01-consolidado.png`, `02-por-recinto.png`, `03-recinto-en-cero.png`, `04-avance.png`, `05-gps.png`, `06-suma-manual.png`.
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
-| 1 | | | | |
-
+| 1 | 2026-11-25, 10:57–10:58 | ✅ con observaciones | Alcalde: 11, 12, 13, 14, 14 = 64, consolidado y Calderón; Centro 0 y 0.0 %; avance 4 de 10 y 4 coordenadas (también hay acta de prefecto en la mesa 2)| `docs/evidencias/tarea-08/` (4 capturas) |
 **Commit sugerido:** `feat: dashboard provincial` · **Hash:** 
 
 ### Tarea 9: Offline y sincronización
@@ -337,7 +347,7 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 **Archivos entregados:** parcial, `src/environments/environment.prod.ts`
 
-**Pruebas automáticas (agente), parcial 2026-11-25:** en la nube, ADR-004 (1), (2) y (4) correctas con cuentas temporales. La (3) también: el estudiante cerró el registro público y un alta directa a la API responde 422 `signup_disabled`. **Faltan** la (5) (tarea 8), SMTP, plantillas, Site URL y largo del código. Asesor de seguridad: 2 avisos por `guardar_acta` y `asignar_veedor` (`security definer`, intencionales: autorizan por dentro) y 1 informativo por `operaciones` (RLS sin políticas, intencional: cerrada a usuarios).
+**Pruebas automáticas (agente), parcial 2026-11-25:** en la nube, ADR-004 (1), (2) y (4) correctas con cuentas temporales. La (3) también: el estudiante cerró el registro público y un alta directa a la API responde 422 `signup_disabled`. La (5) tiene evidencia en la tarea 8. El estudiante informa que ya configuró Supabase (estaban pendientes SMTP, plantillas, Site URL y largo del código); **falta comprobarlo con un correo real**. Asesor de seguridad: 2 avisos por `guardar_acta` y `asignar_veedor` (`security definer`, intencionales: autorizan por dentro) y 1 informativo por `operaciones` (RLS sin políticas, intencional: cerrada a usuarios).
 
 **Tu prueba:**
 1. Repetir en la nube las 5 verificaciones de ADR-004.

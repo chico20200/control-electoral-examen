@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-back-button defaultHref="/provincial" text="Volver"></ion-back-button></ion-buttons>
+    <ion-title>Avance y ubicaciones</ion-title>
+    <ion-buttons slot="end"><ion-button (click)="ionViewWillEnter()">Actualizar</ion-button></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h2 class="ion-padding-horizontal">Actas por recinto</h2>
+  <app-estado-vista [estado]="avance()" textoVacio="Aún no hay recintos." (reintentar)="ionViewWillEnter()" />
+  <ion-list>
+    @for (a of avance().datos; track a.recintoId) {
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h3>{{ a.recinto }}</h3>
+        <ion-progress-bar
+          [value]="a.esperadas ? a.registradas / a.esperadas : 0"
+          [attr.aria-label]="a.recinto"
+        ></ion-progress-bar>
+      </ion-label>
+      <ion-note slot="end">{{ a.registradas }} de {{ a.esperadas }}</ion-note>
+    </ion-item>
+    }
+  </ion-list>
+
+  <h2 class="ion-padding-horizontal">Coordenadas GPS</h2>
+  <app-estado-vista [estado]="actasGps()" textoVacio="Aún no hay actas." (reintentar)="ionViewWillEnter()" />
+  <ion-list>
+    @for (g of actasGps().datos; track g.id) {
+    <ion-item [href]="mapa(g)" target="_blank" rel="noopener" [detail]="true">
+      <ion-label class="ion-text-wrap">
+        <h3>{{ g.recinto }} · Mesa {{ g.jrv }} · {{ g.dignidad === 'alcalde' ? 'Alcalde' : 'Prefecto' }}</h3>
+        <p>{{ g.lat.toFixed(5) }}, {{ g.lng.toFixed(5) }} (±{{ g.precisionM.toFixed(0) }} m)</p>
+      </ion-label>
+    </ion-item>
+    }
+  </ion-list>
+</ion-content>

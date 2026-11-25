@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-back-button defaultHref="/provincial" text="Volver"></ion-back-button></ion-buttons>
+    <ion-title>Resultados</ion-title>
+    <ion-buttons slot="end"><ion-button (click)="ionViewWillEnter()">Actualizar</ion-button></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-segment
+    aria-label="Dignidad"
+    [value]="filtro().dignidad"
+    (ionChange)="filtrar({ dignidad: $any($event.detail.value) })"
+  >
+    <ion-segment-button value="alcalde"><ion-label>Alcalde</ion-label></ion-segment-button>
+    <ion-segment-button value="prefecto"><ion-label>Prefecto</ion-label></ion-segment-button>
+  </ion-segment>
+  <ion-select
+    label="Recinto"
+    labelPlacement="stacked"
+    cancelText="Cancelar"
+    okText="Aceptar"
+    [value]="filtro().recintoId ?? ''"
+    (ionChange)="filtrar({ recintoId: $event.detail.value || null })"
+  >
+    <ion-select-option value="">Consolidado provincial</ion-select-option>
+    @for (a of avance().datos; track a.recintoId) {
+    <ion-select-option [value]="a.recintoId">{{ a.recinto }}</ion-select-option>
+    }
+  </ion-select>
+  <app-estado-vista
+    [estado]="resultados()"
+    textoVacio="Aún no hay candidaturas ni recintos."
+    (reintentar)="ionViewWillEnter()"
+  />
+  @if (resultados().datos?.length) {
+  <p>{{ total() }} votos por candidatura, sin blancos ni nulos.</p>
+  <ion-list>
+    @for (r of resultados().datos; track r.candidaturaId) {
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h2>{{ r.candidato }}</h2>
+        <p>{{ r.organizacion }}</p>
+        <ion-progress-bar [value]="r.porcentaje / 100" [attr.aria-label]="r.candidato"></ion-progress-bar>
+      </ion-label>
+      <ion-note slot="end" class="ion-text-end">{{ r.votos }}<br />{{ r.porcentaje.toFixed(1) }} %</ion-note>
+    </ion-item>
+    }
+  </ion-list>
+  }
+</ion-content>
