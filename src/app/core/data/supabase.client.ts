@@ -23,9 +23,9 @@ export async function invocar<T>(supabase: SupabaseClient, nombre: string, body:
   throw new ErrorApp(respuesta?.error ?? 'INTERNO');
 }
 
-/** Error de PostgREST o Storage: sin estado HTTP significa que no hubo respuesta. */
+/** Error de PostgREST o Storage. Sin estado HTTP, o con la puerta de enlace caída, el servicio no respondió. */
 export function errorDe(estado: number, mensaje = ''): ErrorApp {
-  if (!estado) return new ErrorApp('RED');
+  if (!estado || (estado >= 502 && estado <= 504)) return new ErrorApp('RED');
   if (estado === 401) return new ErrorApp('SESION');
   if (estado === 403) return new ErrorApp('NO_AUTORIZADO');
   return new ErrorApp(/^[A-Z_]+$/.test(mensaje) ? mensaje : 'INTERNO');

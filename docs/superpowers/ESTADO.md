@@ -34,8 +34,8 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | 6 | Coordinadores | ✅ | 3ebd5d8 |
 | 7 | Captura y actas | ✅ | 2d1caa3 |
 | 8 | Dashboard provincial | ✅ | 0f78b36 |
-| 9 | Offline y sincronización | 🟡 | |
-| 10 | Despliegue y entrega | ⬜ | |
+| 9 | Offline y sincronización | ✅ | 08eebf4 |
+| 10 | Despliegue y entrega | 🟡 | |
 
 ## Decisiones
 
@@ -358,13 +358,13 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 | 1 | 2026-11-25, 11:29–11:37 | ❌ parcial | Sin red: acta en el teléfono y «Por enviar» (11:29); se sincronizó. Dos actas quedaron en conflicto y la nube conservó lo del coordinador (total 19), pero el conflicto no se veía fuera de «Actas por enviar». Corregido | `01-pendiente-modo-avion.png`, `02-sincronizada.png` (11:33, aún en modo avión: una sincronizada y una pendiente) y lectura de la cola y la nube |
 | 2 | 2026-11-25, 11:41 | ✅ con observaciones | Aviso «2 acta(s) en conflicto» en el inicio; detalle con dos sincronizadas (10 y 13) y dos en conflicto (13 y 17); en la PC el acta sigue en 19. Sin evidencia: confirmación al cerrar sesión con cola, cierre y reapertura de la app, y el total en la lista de mesas del coordinador (añadido a las 11:46) | `docs/evidencias/tarea-09/` (`03`, `04`, `05`) |
 
-**Commit sugerido:** `feat: cola offline` · **Hash:** 
+**Commit sugerido:** `feat: cola offline` · **Hash:** 08eebf4
 
 ### Tarea 10: Despliegue y entrega
 
-**Archivos entregados:** parcial, `src/environments/environment.prod.ts`
+**Archivos entregados:** `README.md`, `docs/pruebas.md`, `docs/anexo-ia.md`, `src/environments/environment.prod.ts`
 
-**Pruebas automáticas (agente), parcial 2026-11-25:** en la nube, ADR-004 (1), (2) y (4) correctas con cuentas temporales. La (3) también: el estudiante cerró el registro público y un alta directa a la API responde 422 `signup_disabled`. La (5) tiene evidencia en la tarea 8. El estudiante informa que ya configuró Supabase (estaban pendientes SMTP, plantillas, Site URL y largo del código); **falta comprobarlo con un correo real**. Asesor de seguridad: 2 avisos por `guardar_acta` y `asignar_veedor` (`security definer`, intencionales: autorizan por dentro) y 1 informativo por `operaciones` (RLS sin políticas, intencional: cerrada a usuarios).
+**Pruebas automáticas (agente), parcial 2026-11-25:** en la nube, ADR-004 (1), (2) y (4) correctas con cuentas temporales. La (3) también: el estudiante cerró el registro público y un alta directa a la API responde 422 `signup_disabled`. La (5) tiene evidencia en la tarea 8. El estudiante informa que ya configuró Supabase (estaban pendientes SMTP, plantillas, Site URL y largo del código); 11:53–12:13: once intentos de alta fallaron con `535` de Gmail (Username equivocado en el SMTP; el mensaje de la app no lo decía); el agente lo identificó en los registros de Auth y el estudiante lo corrigió. 12:18: alta, envío 200 y enlace de confirmación abierto (`/verify` 303). 12:22–12:23: recuperación completa en la nube (correo, código verificado y clave cambiada, según los registros de Auth). Revisión independiente (subagente, solo lectura): sin hallazgos críticos, 10 hallazgos. Corregido: 502–504 se tratan como falta de red, para no perder el acta (RED 3 fallas → 174/174; lint y compilación correctos; APK 12:30), README sin depender de la CLI global de Ionic y tabla de trazabilidad. Declarados como limitación: sin tiempo límite de envío, copia local desactualizada tras sincronizar, correo equivocado al crear una cuenta. Sin corregir por el plazo: mezcla de copia local si se cambia de usuario durante una carga lenta (el servidor rechaza cualquier envío) y error de recintos no visible en el selector del dashboard. El APK de las 12:30 no se ha probado en el teléfono. 11:53: 168/168, lint, cuentas 9/9 (edge runtime local estaba detenido; iniciado), pgTAP 54/55: falla «seis recintos» por el recinto creado a mano en la tarea 6; al renombrarlo en una transacción deshecha, 36/36. Sin claves administrativas en `src` ni `android/app/src`; `supabase-js` solo en `core/data`; ninguna página importa repositorios. 12:27: a pedido del estudiante, el mensaje `CORREO` ya no culpa solo a la dirección (RED 1 falla → 168/168); APK nuevo. **Pendiente:** contraseñas y enlace del APK en el README, y APK en un teléfono limpio. Asesor de seguridad: 2 avisos por `guardar_acta` y `asignar_veedor` (`security definer`, intencionales: autorizan por dentro) y 1 informativo por `operaciones` (RLS sin políticas, intencional: cerrada a usuarios).
 
 **Tu prueba:**
 1. Repetir en la nube las 5 verificaciones de ADR-004.

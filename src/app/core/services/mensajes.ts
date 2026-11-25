@@ -6,7 +6,7 @@ const MENSAJES = new Map([
   ['CREDENCIALES', 'Cédula o contraseña incorrectas.'],
   ['SIN_CONFIRMAR', 'Confirma tu cuenta con el enlace que enviamos a tu correo.'],
   ['DATOS', 'Revisa los datos ingresados.'],
-  ['CORREO', 'No se pudo enviar el correo. Revisa la dirección.'],
+  ['CORREO', 'No se pudo enviar el correo. Intenta más tarde o revisa la dirección.'],
   ['DUPLICADO', 'Ya existe una cuenta con esa cédula o correo.'],
   ['RECINTO_OCUPADO', 'Ese recinto ya tiene coordinador.'],
   ['RECINTO_DUPLICADO', 'Ya existe un recinto con ese nombre en la parroquia.'],
