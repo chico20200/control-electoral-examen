@@ -32,7 +32,7 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | 4 | Validadores | ✅ | 81d48a7 |
 | 5 | Acceso, guards y navegación | ✅ | baa44a6 |
 | 6 | Coordinadores | 🟡 | |
-| 7 | Captura y actas | ⬜ | |
+| 7 | Captura y actas | 🟡 | |
 | 8 | Dashboard provincial | ⬜ | |
 | 9 | Offline y sincronización | ⬜ | |
 | 10 | Despliegue y entrega | ⬜ | |
@@ -71,6 +71,10 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | D28 | 2026-11-24 | Una pantalla de inicio común por rol, provisional; se quitó `home` | Las tareas 6 a 8 agregan sus opciones | Acordada (técnica) |
 | D29 | 2026-11-24 | Cada recarga descarta los datos anteriores y solo cuenta la última respuesta (`Recurso`) | No mostrar datos de otro usuario ni respuestas atrasadas | Acordada (técnica) |
 | D30 | 2026-11-24 | Quitar o cambiar un veedor ya asignado pide confirmación | El veedor anterior deja de ver la mesa | Acordada (técnica) |
+| D31 | 2026-11-25 | El coordinador solo ve «Corregir» en actas registradas; las pendientes las registra el veedor. La pantalla no es la seguridad: el servidor también acepta al coordinador del recinto | R5 pide corregir datos y fotos | Acordada (técnica) |
+| D32 | 2026-11-25 | Los votos a medio escribir se guardan en el teléfono por usuario, mesa y dignidad, y solo se recuperan si el acta sigue en la misma versión | Android puede cerrar la app al abrir la cámara | Acordada (técnica) |
+| D33 | 2026-11-25 | HTTP hacia `127.0.0.1` permitido solo en el APK debug | Probar por USB contra Supabase local; el APK final usará HTTPS | Acordada (técnica) |
+| D34 | 2026-11-25 | Adelantar el despliegue en la nube (tarea 10) y probar la tarea 7 contra ella | Pedido del estudiante; el ingreso local falló porque el contenedor de Edge Functions estaba detenido y la puerta de enlace respondía 503 | Acordada |
 
 Si una decisión contradice un ADR aceptado, se escribe un ADR de reemplazo en `docs/adr/`.
 
@@ -257,23 +261,34 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 ### Tarea 7: Captura y actas
 
-**Archivos entregados:** _pendiente_
+**Archivos entregados:** en `src/app`: `core/data/{actas,borradores}.repo.ts`, `core/services/{actas.service,captura.service,dispositivo,nitidez}.ts`, `shared/components/acta-form/`, `pages/acta/` (compartida por veedor y coordinador, en lugar de dos páginas), `pages/veedor/mis-mesas/`, con specs de repositorio de actas, servicios, nitidez, formulario y mesas. Modificados: rutas, inicio, modelos, mensajes, `pages/recinto/mesas/`, `AndroidManifest.xml`. Nuevo `android/app/src/debug/` (solo debug).
 
-**Pruebas automáticas (agente):** _pendiente_
+**Pruebas automáticas (agente), 2026-11-25:** la noche del 24 al 25 la computadora se quedó sin memoria durante la primera ejecución, justo después de que un script fallara a la mitad; su resultado se perdió. Al retomar: 127/128 (el doble de `urlFoto` no devolvía una promesa; error de la prueba, corregido). Para el botón del coordinador, RED 128/129 → GREEN 129/129. Lint y compilación correctos. Seis sabotajes detectados: aceptar foto borrosa (1 falla), ignorar totales (2), reutilizar el GPS viejo (1), no tolerar foto ya subida (1), recuperar votos de otra versión (1), corregir un acta pendiente (1). Restaurado: 129/129. El `ActasRepo` real contra Supabase local: 12/12; los datos temporales se borraron. APK debug compilado con los permisos de cámara y ubicación; **no se ha probado en el teléfono**. Primer intento del estudiante (ingreso): «error inesperado», porque el contenedor local de Edge Functions estaba detenido (503); el agente no lo había comprobado. Se pasó a la nube (D34): 3 migraciones, datos de demostración y 5 funciones desplegados, una cuenta por rol; login de los tres roles correcto y 18/18 comprobaciones, con datos temporales borrados. Tras la prueba del estudiante, el agente leyó la base (2026-11-25, 09:27): ambas actas de la mesa 1 en versión 3, con totales que cuadran (49+0+12 = 61 y 50+0+10 = 60); la última edición de cada una es del coordinador (09:21 y 09:23), sin foto nueva. Nitidez en capturas: 36 (bloqueada) y 267 (aceptada); el umbral queda en 100. **Sin evidencia:** permisos denegados en el teléfono (solo pruebas automáticas; el estudiante decidió no repetirlo) y corrección del coordinador con foto nueva.
+
+**Para qué sirve:** demuestra que el veedor registra ambas actas con foto nítida, GPS y totales que cuadran (R6, R7) y que el coordinador las corrige (R5).
+
+**Cómo está construida:** los specs sustituyen la cámara, el GPS y el servidor por dobles para provocar cada fallo. El recorrido del repositorio usa la base local con un veedor y un coordinador temporales. Tu prueba usa la cámara y el GPS reales.
+
+**Por qué es fiable:** hay casos buenos y malos, seis sabotajes detectados y comprobaciones en el servidor de reintento, conflicto y mesa ajena.
+
+**Qué no cubre:** la cámara y el GPS reales y el umbral de nitidez (los cubre tu prueba), el modo sin conexión (tarea 9) ni el correo en la nube (tarea 10). La nitidez mide bordes: no sabe si la foto es de un acta.
 
 **Tu prueba:**
-1. Registrar alcalde y prefecto con foto y GPS.
-2. Probar foto borrosa, permisos denegados y totales que no cuadran.
-3. Corregir como coordinador.
-4. Instalar el APK de prueba.
+1. Teléfono con internet y conectado por USB: `~/Android/Sdk/platform-tools/adb install -r android/app/build/outputs/apk/debug/app-debug.apk`. No hace falta `adb reverse` ni Supabase local. Si queda una sesión vieja, borrar los datos de la app.
+2. Ingresar con `Ecuador2026` y cambiar la clave cuando lo pida. Como coordinador `2410034066`, asignar la mesa 1 a Víctor Prueba; luego entrar como veedor `3010034068`.
+3. Mis mesas → acta de alcalde: negar la cámara y luego permitirla en ajustes; negar la ubicación y comprobar que los votos escritos siguen ahí.
+4. Tomar una foto movida (debe bloquear) y una nítida. Anotar la nitidez de 3 fotos borrosas y 3 nítidas, para calibrar el umbral (hoy 100).
+5. Poner un total que no cuadre (debe bloquear), corregirlo y guardar. Registrar también la de prefecto.
+6. Como coordinador: Mesas → Corregir alcalde; cambiar un dato sin foto nueva y guardar; después corregir con una foto nueva.
 
-**Se aprueba si / evidencia:** Errores claros sin perder datos; anotar nitidez medida y umbral final.
+**Se aprueba si / evidencia:** errores claros sin perder datos; anotar nitidez medida y umbral final.
 
-**Capturas recomendadas:** Foto nítida y borrosa con su valor; permiso denegado; totales incorrectos; acta con GPS; fila en la base.
+**Capturas recomendadas** (`docs/evidencias/tarea-07/`): `01-permiso-denegado.png`, `02-foto-borrosa.png`, `03-foto-nitida.png`, `04-totales.png`, `05-acta-gps.png`, `06-correccion.png`, `07-fila-base.png` (panel de la nube, tabla `actas`).
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
-| 1 | | | | |
+| 1 | 2026-11-25, hacia 08:30 | ❌ | Ingreso contra Supabase local: «error inesperado» (Edge Functions detenidas, 503). Se pasó a la nube | Reporte del estudiante y registro del servidor local |
+| 2 | 2026-11-25, 08:58–09:23 | ✅ con observaciones | En la nube: ingreso correcto; foto borrosa bloqueada (36) y nítida aceptada (267); totales 60/61 bloqueados; dos actas registradas con GPS; el coordinador corrigió ambas (versión 3), sin foto nueva. El estudiante informa que la nitidez está correcta y decidió no repetir los permisos denegados. Sin evidencia: permisos denegados en el teléfono y corrección con foto nueva | `docs/evidencias/tarea-07/` (7 capturas; `01` muestra credenciales incorrectas, no un permiso) y lectura de la base en la nube |
 
 **Commit sugerido:** `feat: registro y corrección de actas` · **Hash:** 
 
@@ -320,9 +335,9 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 ### Tarea 10: Despliegue y entrega
 
-**Archivos entregados:** _pendiente_
+**Archivos entregados:** parcial, `src/environments/environment.prod.ts`
 
-**Pruebas automáticas (agente):** _pendiente_
+**Pruebas automáticas (agente), parcial 2026-11-25:** en la nube, ADR-004 (1), (2) y (4) correctas con cuentas temporales. La (3) también: el estudiante cerró el registro público y un alta directa a la API responde 422 `signup_disabled`. **Faltan** la (5) (tarea 8), SMTP, plantillas, Site URL y largo del código. Asesor de seguridad: 2 avisos por `guardar_acta` y `asignar_veedor` (`security definer`, intencionales: autorizan por dentro) y 1 informativo por `operaciones` (RLS sin políticas, intencional: cerrada a usuarios).
 
 **Tu prueba:**
 1. Repetir en la nube las 5 verificaciones de ADR-004.

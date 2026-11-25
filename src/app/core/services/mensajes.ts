@@ -19,6 +19,10 @@ const MENSAJES = new Map([
   ['VOTOS', 'Los votos deben ser números enteros, sin campos vacíos.'],
   ['TOTALES', 'La suma de votos no coincide con el total de sufragantes.'],
   ['FOTO', 'La foto del acta falta o no corresponde a esta mesa.'],
+  ['CAMARA_DENEGADA', 'Permite el uso de la cámara en los ajustes del teléfono.'],
+  ['CAMARA_NO_DISPONIBLE', 'No se pudo tomar la foto. Intenta de nuevo.'],
+  ['GPS_DENEGADO', 'Permite el acceso a la ubicación en los ajustes del teléfono.'],
+  ['GPS_NO_DISPONIBLE', 'No se obtuvo la ubicación. Activa el GPS e intenta de nuevo.'],
   ['RED', 'Sin conexión. Revisa tu internet e intenta de nuevo.'],
 ]);
 

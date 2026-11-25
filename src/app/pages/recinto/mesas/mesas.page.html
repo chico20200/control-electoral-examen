@@ -16,14 +16,22 @@
       <ion-label>
         <h2>Mesa {{ m.numero }}</h2>
         <p>
-          <ion-badge [color]="m.alcalde ? 'success' : 'medium'"
-            >Alcalde: {{ m.alcalde ? 'registrada' : 'pendiente' }}</ion-badge
+          @if (m.alcalde) {
+          <ion-button size="small" fill="outline" [routerLink]="['/recinto/mesas', m.id, 'alcalde']"
+            >Corregir alcalde</ion-button
           >
+          } @else {
+          <ion-badge color="medium">Alcalde: pendiente</ion-badge>
+          }
         </p>
         <p>
-          <ion-badge [color]="m.prefecto ? 'success' : 'medium'"
-            >Prefecto: {{ m.prefecto ? 'registrada' : 'pendiente' }}</ion-badge
+          @if (m.prefecto) {
+          <ion-button size="small" fill="outline" [routerLink]="['/recinto/mesas', m.id, 'prefecto']"
+            >Corregir prefecto</ion-button
           >
+          } @else {
+          <ion-badge color="medium">Prefecto: pendiente</ion-badge>
+          }
         </p>
       </ion-label>
       <ion-select

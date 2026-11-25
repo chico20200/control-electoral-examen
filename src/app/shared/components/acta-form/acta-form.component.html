@@ -1,0 +1,87 @@
+<form class="formulario" [formGroup]="form" (ngSubmit)="enviar()" (ionInput)="cambio.emit(form.getRawValue())">
+  <h2>Fotografía y ubicación</h2>
+  @if (foto()?.vistaPrevia ?? datos().fotoUrl; as imagen) {
+    <img [src]="imagen" alt="Fotografía del acta" />
+  }
+  @if (foto(); as f) {
+    <ion-text [color]="f.aceptable ? 'success' : 'danger'" role="status">
+      {{ f.aceptable ? 'Foto nítida' : 'Foto borrosa: repítela con buena luz y sin mover el teléfono' }}
+      (nitidez {{ f.nitidez }}, mínimo {{ umbral }}).
+    </ion-text>
+  }
+  <ion-button expand="block" fill="outline" [disabled]="ocupado() || enviando()" (click)="tomarFoto()">
+    @if (ocupado() === 'camara') {
+      <ion-spinner aria-label="Procesando la foto"></ion-spinner>
+    } @else {
+      {{ foto() || datos().acta ? 'Tomar otra foto' : 'Tomar foto' }}
+    }
+  </ion-button>
+  @if (foto() && datos().acta) {
+    <ion-button expand="block" fill="clear" [disabled]="ocupado() || enviando()" (click)="descartarFoto()">
+      Conservar la foto guardada
+    </ion-button>
+  }
+  @if (gps(); as g) {
+    <ion-note>Ubicación: {{ g.lat.toFixed(5) }}, {{ g.lng.toFixed(5) }} (±{{ g.precisionM.toFixed(0) }} m)</ion-note>
+  } @else if (ocupado() === 'gps') {
+    <ion-note>Obteniendo ubicación… <ion-spinner name="dots" aria-hidden="true"></ion-spinner></ion-note>
+  } @else if (foto()?.aceptable) {
+    <ion-text color="danger" role="alert">Falta la ubicación. Tus datos se conservan.</ion-text>
+    <ion-button expand="block" fill="outline" (click)="ubicar()">Reintentar ubicación</ion-button>
+  }
+
+  <h2>Votos</h2>
+  <div class="formulario" formGroupName="votos">
+    @for (c of datos().candidaturas; track c.id) {
+      <ion-input
+        [label]="c.organizacion"
+        [helperText]="c.nombre"
+        labelPlacement="stacked"
+        fill="outline"
+        inputmode="numeric"
+        [maxlength]="6"
+        [formControlName]="c.id"
+        errorText="Ingresa un entero; si no hubo votos, 0."
+      ></ion-input>
+    }
+  </div>
+  <ion-input
+    label="Votos blancos"
+    labelPlacement="stacked"
+    fill="outline"
+    inputmode="numeric"
+    [maxlength]="6"
+    formControlName="blancos"
+    errorText="Ingresa un entero; si no hubo, 0."
+  ></ion-input>
+  <ion-input
+    label="Votos nulos"
+    labelPlacement="stacked"
+    fill="outline"
+    inputmode="numeric"
+    [maxlength]="6"
+    formControlName="nulos"
+    errorText="Ingresa un entero; si no hubo, 0."
+  ></ion-input>
+  <ion-input
+    label="Total de sufragantes"
+    labelPlacement="stacked"
+    fill="outline"
+    inputmode="numeric"
+    [maxlength]="6"
+    formControlName="totalSufragantes"
+    errorText="Ingresa el total."
+  ></ion-input>
+  @if (form.errors?.['totales']; as t) {
+    <ion-text color="danger" role="alert">
+      La suma de votos es {{ t.suma }}, pero el total de sufragantes es {{ t.total }}.
+    </ion-text>
+  }
+  <ion-button expand="block" type="submit" [disabled]="!puedeGuardar()">
+    @if (enviando()) {
+      <ion-spinner aria-label="Guardando"></ion-spinner>
+    } @else {
+      Guardar acta
+    }
+  </ion-button>
+</form>

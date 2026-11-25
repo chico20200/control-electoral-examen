@@ -1,7 +1,9 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   IonBackButton,
   IonBadge,
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -26,8 +28,10 @@ import { EstadoVistaComponent } from '../../../shared/components/estado-vista/es
   templateUrl: 'mesas.page.html',
   imports: [
     EstadoVistaComponent,
+    RouterLink,
     IonBackButton,
     IonBadge,
+    IonButton,
     IonButtons,
     IonContent,
     IonHeader,

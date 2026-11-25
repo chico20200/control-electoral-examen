@@ -63,6 +63,47 @@ export interface Acta {
   version: number;
 }
 
+/** Fotografía ya procesada, con su nitidez medida (R7). */
+export interface FotoActa {
+  blob: Blob;
+  vistaPrevia: string;
+  nitidez: number;
+  aceptable: boolean;
+}
+
+export interface Ubicacion {
+  lat: number;
+  lng: number;
+  precisionM: number;
+}
+
+/** Acta lista para enviar. `operacionId` identifica el envío y permite reintentarlo sin duplicar. */
+export type BorradorActa = Omit<Acta, 'id' | 'fotoPath' | 'version'> & {
+  operacionId: string;
+  recintoId: string;
+  versionBase: number;
+  foto: Blob | null;
+  fotoPath: string | null;
+};
+
+/** Lo escrito en el formulario; texto, porque puede estar incompleto. */
+export interface ValoresActa {
+  votos: Record<string, string>;
+  blancos: string;
+  nulos: string;
+  totalSufragantes: string;
+}
+
+/** Todo lo necesario para registrar o corregir un acta. */
+export interface ActaAbierta {
+  mesa: Jrv;
+  dignidad: Dignidad;
+  candidaturas: Candidatura[];
+  acta: Acta | null;
+  fotoUrl: string | null;
+  valores: ValoresActa | null;
+}
+
 /** Estado explícito de una vista (R9). */
 export interface Estado<T> {
   fase: 'inicial' | 'cargando' | 'exito' | 'error';

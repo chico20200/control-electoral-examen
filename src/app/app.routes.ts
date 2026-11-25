@@ -11,6 +11,7 @@ const privada = (rol: Rol, path: string, loadComponent: Route['loadComponent']):
   loadComponent,
 });
 
+const acta = () => import('./pages/acta/acta.page').then((m) => m.ActaPage);
 const inicio = () => import('./pages/inicio/inicio.page').then((m) => m.InicioPage);
 
 export const routes: Routes = [
@@ -42,7 +43,10 @@ export const routes: Routes = [
   privada('recinto', '', inicio),
   privada('recinto', '/mesas', () => import('./pages/recinto/mesas/mesas.page').then((m) => m.MesasPage)),
   privada('recinto', '/veedores', () => import('./pages/recinto/veedores/veedores.page').then((m) => m.VeedoresPage)),
+  privada('recinto', '/mesas/:jrvId/:dignidad', acta),
   privada('veedor', '', inicio),
+  privada('veedor', '/mesas', () => import('./pages/veedor/mis-mesas/mis-mesas.page').then((m) => m.MisMesasPage)),
+  privada('veedor', '/mesas/:jrvId/:dignidad', acta),
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
 ];

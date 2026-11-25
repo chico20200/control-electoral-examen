@@ -17,10 +17,10 @@ const OPCIONES: Record<Rol, { texto: string; ruta: string }[]> = {
     { texto: 'Mesas', ruta: '/recinto/mesas' },
     { texto: 'Veedores', ruta: '/recinto/veedores' },
   ],
-  veedor: [],
+  veedor: [{ texto: 'Mis mesas', ruta: '/veedor/mesas' }],
 };
 
-/** Pantalla inicial por rol; las tareas 7 y 8 agregan más opciones. */
+/** Pantalla inicial por rol; la tarea 8 agrega el dashboard. */
 @Component({
   selector: 'app-inicio',
   imports: [RouterLink, IonButton, IonContent, IonHeader, IonTitle, IonToolbar],
