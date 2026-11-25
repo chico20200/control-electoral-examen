@@ -11,7 +11,16 @@ const TITULOS: Record<Rol, string> = {
   veedor: 'Veedor',
 };
 
-/** Pantalla inicial por rol; las tareas 6 a 8 agregan sus opciones. */
+const OPCIONES: Record<Rol, { texto: string; ruta: string }[]> = {
+  provincial: [{ texto: 'Recintos', ruta: '/provincial/recintos' }],
+  recinto: [
+    { texto: 'Mesas', ruta: '/recinto/mesas' },
+    { texto: 'Veedores', ruta: '/recinto/veedores' },
+  ],
+  veedor: [],
+};
+
+/** Pantalla inicial por rol; las tareas 7 y 8 agregan más opciones. */
 @Component({
   selector: 'app-inicio',
   imports: [RouterLink, IonButton, IonContent, IonHeader, IonTitle, IonToolbar],
@@ -23,6 +32,9 @@ const TITULOS: Record<Rol, string> = {
     </ion-header>
     <ion-content class="ion-padding">
       <h1>{{ perfil()?.nombres }} {{ perfil()?.apellidos }}</h1>
+      @for (o of opciones(); track o.ruta) {
+        <ion-button expand="block" [routerLink]="o.ruta">{{ o.texto }}</ion-button>
+      }
       <ion-button expand="block" fill="outline" routerLink="/cambiar-clave">Cambiar contraseña</ion-button>
       <ion-button expand="block" fill="clear" (click)="salir()">Cerrar sesión</ion-button>
     </ion-content>
@@ -32,7 +44,9 @@ export class InicioPage {
   private readonly auth = inject(AuthService);
 
   protected readonly perfil = this.auth.perfil;
-  protected readonly titulo = computed(() => TITULOS[this.perfil()?.rol ?? 'veedor']);
+  private readonly rol = computed(() => this.perfil()?.rol ?? 'veedor');
+  protected readonly titulo = computed(() => TITULOS[this.rol()]);
+  protected readonly opciones = computed(() => OPCIONES[this.rol()]);
 
   salir(): Promise<void> {
     return this.auth.salir();

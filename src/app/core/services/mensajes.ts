@@ -9,6 +9,7 @@ const MENSAJES = new Map([
   ['CORREO', 'No se pudo enviar el correo. Revisa la dirección.'],
   ['DUPLICADO', 'Ya existe una cuenta con esa cédula o correo.'],
   ['RECINTO_OCUPADO', 'Ese recinto ya tiene coordinador.'],
+  ['RECINTO_DUPLICADO', 'Ya existe un recinto con ese nombre en la parroquia.'],
   ['SESION', 'Tu sesión terminó. Vuelve a ingresar.'],
   ['CLAVE_DEBIL', 'Usa al menos 8 caracteres y no la contraseña inicial.'],
   ['CODIGO', 'El código es incorrecto o ya caducó.'],

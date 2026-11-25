@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"
+      ><ion-back-button defaultHref="/provincial/recintos" text="Volver"></ion-back-button
+    ></ion-buttons>
+    <ion-title>Nuevo recinto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form class="formulario" [formGroup]="form" (ngSubmit)="guardar()">
+    <ion-input
+      label="Provincia"
+      labelPlacement="stacked"
+      fill="outline"
+      formControlName="provincia"
+      errorText="Ingresa la provincia."
+    ></ion-input>
+    <ion-input
+      label="Cantón"
+      labelPlacement="stacked"
+      fill="outline"
+      formControlName="canton"
+      errorText="Ingresa el cantón."
+    ></ion-input>
+    <ion-input
+      label="Parroquia"
+      labelPlacement="stacked"
+      fill="outline"
+      formControlName="parroquia"
+      errorText="Ingresa la parroquia."
+    ></ion-input>
+    <ion-input
+      label="Nombre"
+      labelPlacement="stacked"
+      fill="outline"
+      formControlName="nombre"
+      errorText="Ingresa el nombre."
+    ></ion-input>
+    <ion-input
+      label="Cantidad de JRV"
+      labelPlacement="stacked"
+      fill="outline"
+      inputmode="numeric"
+      formControlName="numJrv"
+      errorText="Ingresa un entero entre 1 y 100."
+    ></ion-input>
+    <ion-button expand="block" type="submit" [disabled]="guardando()">
+      @if (guardando()) {
+      <ion-spinner aria-label="Guardando"></ion-spinner>
+      } @else { Crear recinto }
+    </ion-button>
+  </form>
+</ion-content>

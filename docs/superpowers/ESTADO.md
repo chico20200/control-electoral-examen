@@ -30,8 +30,8 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | 2 | Base de datos, RLS y RPC | ✅ | 92f4225 |
 | 3 | Edge Functions de cuentas | ✅ | c7c6c42 |
 | 4 | Validadores | ✅ | 81d48a7 |
-| 5 | Acceso, guards y navegación | 🟡 | |
-| 6 | Coordinadores | ⬜ | |
+| 5 | Acceso, guards y navegación | ✅ | baa44a6 |
+| 6 | Coordinadores | 🟡 | |
 | 7 | Captura y actas | ⬜ | |
 | 8 | Dashboard provincial | ⬜ | |
 | 9 | Offline y sincronización | ⬜ | |
@@ -69,6 +69,8 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | D26 | 2026-11-24 | La app abre con el perfil guardado y lo comprueba en segundo plano; sin red lo conserva, y si el servidor lo rechaza cierra la sesión | Abrir sin red (R10); la copia local no autoriza nada | Acordada (técnica) |
 | D27 | 2026-11-24 | `scripts/cuentas-prueba-local.mjs` crea o reinicia una cuenta por rol y rechaza cualquier servidor que no sea local | Probar los tres roles antes de la tarea 6 | Acordada (técnica) |
 | D28 | 2026-11-24 | Una pantalla de inicio común por rol, provisional; se quitó `home` | Las tareas 6 a 8 agregan sus opciones | Acordada (técnica) |
+| D29 | 2026-11-24 | Cada recarga descarta los datos anteriores y solo cuenta la última respuesta (`Recurso`) | No mostrar datos de otro usuario ni respuestas atrasadas | Acordada (técnica) |
+| D30 | 2026-11-24 | Quitar o cambiar un veedor ya asignado pide confirmación | El veedor anterior deja de ver la mesa | Acordada (técnica) |
 
 Si una decisión contradice un ADR aceptado, se escribe un ADR de reemplazo en `docs/adr/`.
 
@@ -224,18 +226,28 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 ### Tarea 6: Coordinadores
 
-**Archivos entregados:** _pendiente_
+**Archivos entregados:** en `src/app`: `core/data/{recintos,usuarios}.repo.ts`, `core/services/{recurso,recintos.service,usuarios.service}.ts` con specs, `shared/components/usuario-form/`, `pages/provincial/` (3), `pages/recinto/` (2). Modificados: rutas, inicio, modelos, mensajes, `supabase.client.ts` y `auth.repo.ts` (columnas del perfil compartidas).
 
-**Pruebas automáticas (agente):** _pendiente_
+**Pruebas automáticas (agente), 2026-11-24:** RED: no compila, faltan los módulos · GREEN 89/89 a la primera · lint: 1 error de importaciones, corregido · build correcto. Cinco sabotajes detectados: respuesta atrasada (1 falla), sin validar cédula (1), doble envío (1), sin recargar mesas (2), `guardando` bloqueado (1). Restaurado: 89/89. Recorrido en Chromium contra Supabase local: 28/28 comprobaciones; las cuentas y el recinto temporales se borraron. La nube no se ha tocado.
+
+**Para qué sirve:** demuestra que el provincial crea recintos y coordinadores (R4), que el coordinador crea veedores y los asigna (R5), y que una cédula inválida no llega al servidor (R2).
+
+**Cómo está construida:** los specs usan repositorios falsos para provocar éxito, fallo o retraso, y el formulario se prueba enviándolo con datos buenos y malos. Tu prueba recorre lo mismo en la app contra el servidor local.
+
+**Por qué es fiable:** casos positivos y negativos, cinco sabotajes detectados y, en el recorrido, se consultó la base para confirmar quién quedó asignado a la mesa.
+
+**Qué no cubre:** los permisos del servidor (tareas 2 y 3), el teléfono, la nube ni el envío real de correos (tareas 7 y 10). El estado de las actas saldrá «pendiente» hasta la tarea 7.
 
 **Tu prueba:**
-1. Crear un recinto y ver sus JRV.
-2. Crear coordinador y veedor; probar cédula inválida.
-3. Asignar y reasignar un veedor.
+1. `node scripts/cuentas-prueba-local.mjs` y `npx ionic serve`. El script reinicia las claves a `Ecuador2026`: cada cuenta pedirá cambiarla.
+2. Provincial (`1710034065`) → Recintos → Nuevo: crear uno con 3 JRV; en la lista debe decir «3 JRV» y «sin asignar».
+3. En ese recinto, Asignar: con cédula `0900000009` debe bloquearse; con `0900000019` debe crearse. Correo, por ejemplo: `coor.demo@prueba.local`.
+4. Coordinador de recinto (`2410034066`) → Veedores → Nuevo: crear uno con cédula `0900000027` y correo `veedor.demo@prueba.local`.
+5. Mesas: asignar la mesa 1 a Víctor Prueba; después cambiarla al veedor nuevo y aceptar la confirmación.
 
 **Se aprueba si / evidencia:** Datos visibles y cédula inválida bloqueada.
 
-**Capturas recomendadas:** Cédula inválida bloqueada; recinto con sus JRV; mesa antes y después de reasignar.
+**Capturas recomendadas** (`docs/evidencias/tarea-06/`): `01-recinto-jrv.png`, `02-cedula-invalida.png`, `03-coordinador.png`, `04-mesa-antes.png`, `05-mesa-despues.png`.
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|

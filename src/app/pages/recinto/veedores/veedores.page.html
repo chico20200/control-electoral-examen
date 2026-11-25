@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-back-button defaultHref="/recinto" text="Volver"></ion-back-button></ion-buttons>
+    <ion-title>Veedores</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="guardando()" (click)="creando.set(!creando())"
+        >{{ creando() ? 'Cancelar' : 'Nuevo' }}</ion-button
+      >
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [class.ion-padding]="creando()">
+  @if (creando()) {
+  <app-usuario-form [enviando]="guardando()" (guardar)="guardar($event)" />
+  } @else {
+  <app-estado-vista [estado]="veedores()" textoVacio="Aún no hay veedores." (reintentar)="ionViewWillEnter()" />
+  <ion-list>
+    @for (v of veedores().datos; track v.id) {
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h2>{{ v.nombres }} {{ v.apellidos }}</h2>
+        <p>{{ v.cedula }} · {{ v.telefono }}</p>
+        <p>{{ v.correo }}</p>
+      </ion-label>
+    </ion-item>
+    }
+  </ion-list>
+  }
+</ion-content>

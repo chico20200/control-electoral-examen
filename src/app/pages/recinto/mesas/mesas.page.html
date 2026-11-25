@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"><ion-back-button defaultHref="/recinto" text="Volver"></ion-back-button></ion-buttons>
+    <ion-title>Mesas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-estado-vista [estado]="mesas()" textoVacio="El recinto no tiene mesas." (reintentar)="ionViewWillEnter()" />
+  @if (mesas().fase === 'exito' && veedores().fase === 'error') {
+  <app-estado-vista [estado]="veedores()" (reintentar)="ionViewWillEnter()" />
+  }
+  <ion-list>
+    @for (m of mesas().datos; track m.id) {
+    <ion-item>
+      <ion-label>
+        <h2>Mesa {{ m.numero }}</h2>
+        <p>
+          <ion-badge [color]="m.alcalde ? 'success' : 'medium'"
+            >Alcalde: {{ m.alcalde ? 'registrada' : 'pendiente' }}</ion-badge
+          >
+        </p>
+        <p>
+          <ion-badge [color]="m.prefecto ? 'success' : 'medium'"
+            >Prefecto: {{ m.prefecto ? 'registrada' : 'pendiente' }}</ion-badge
+          >
+        </p>
+      </ion-label>
+      <ion-select
+        slot="end"
+        label="Veedor"
+        labelPlacement="stacked"
+        placeholder="Sin asignar"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        [selectedText]="m.veedor ?? 'Sin asignar'"
+        [value]="m.veedorId ?? ''"
+        [disabled]="veedores().fase !== 'exito'"
+        (ionChange)="asignar(m, $event.detail.value)"
+      >
+        <ion-select-option value="">Sin asignar</ion-select-option>
+        @for (v of veedores().datos; track v.id) {
+        <ion-select-option [value]="v.id">{{ v.nombres }} {{ v.apellidos }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+    }
+  </ion-list>
+</ion-content>

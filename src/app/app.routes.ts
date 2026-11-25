@@ -30,7 +30,18 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/auth/cambiar-clave/cambiar-clave.page').then((m) => m.CambiarClavePage),
   },
   privada('provincial', '', inicio),
+  privada('provincial', '/recintos', () =>
+    import('./pages/provincial/recintos/recintos.page').then((m) => m.RecintosPage),
+  ),
+  privada('provincial', '/recintos/nuevo', () =>
+    import('./pages/provincial/recinto-nuevo/recinto-nuevo.page').then((m) => m.RecintoNuevoPage),
+  ),
+  privada('provincial', '/recintos/:id/coordinador', () =>
+    import('./pages/provincial/coordinador-nuevo/coordinador-nuevo.page').then((m) => m.CoordinadorNuevoPage),
+  ),
   privada('recinto', '', inicio),
+  privada('recinto', '/mesas', () => import('./pages/recinto/mesas/mesas.page').then((m) => m.MesasPage)),
+  privada('recinto', '/veedores', () => import('./pages/recinto/veedores/veedores.page').then((m) => m.VeedoresPage)),
   privada('veedor', '', inicio),
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },

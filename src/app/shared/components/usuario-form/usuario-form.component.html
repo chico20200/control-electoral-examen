@@ -1,0 +1,51 @@
+<form class="formulario" [formGroup]="form" (ngSubmit)="enviar()">
+  <ion-input
+    label="Cédula"
+    labelPlacement="stacked"
+    fill="outline"
+    inputmode="numeric"
+    [maxlength]="10"
+    formControlName="cedula"
+    errorText="Ingresa una cédula válida de 10 dígitos."
+  ></ion-input>
+  <ion-input
+    label="Nombres"
+    labelPlacement="stacked"
+    fill="outline"
+    autocapitalize="words"
+    formControlName="nombres"
+    errorText="Ingresa los nombres."
+  ></ion-input>
+  <ion-input
+    label="Apellidos"
+    labelPlacement="stacked"
+    fill="outline"
+    autocapitalize="words"
+    formControlName="apellidos"
+    errorText="Ingresa los apellidos."
+  ></ion-input>
+  <ion-input
+    label="Teléfono"
+    labelPlacement="stacked"
+    fill="outline"
+    inputmode="tel"
+    [maxlength]="10"
+    formControlName="telefono"
+    errorText="Ingresa 10 dígitos que empiecen en 0."
+  ></ion-input>
+  <ion-input
+    label="Correo"
+    labelPlacement="stacked"
+    fill="outline"
+    type="email"
+    formControlName="correo"
+    errorText="Ingresa un correo válido."
+  ></ion-input>
+  <ion-button expand="block" type="submit" [disabled]="enviando()">
+    @if (enviando()) {
+      <ion-spinner aria-label="Guardando"></ion-spinner>
+    } @else {
+      Crear cuenta
+    }
+  </ion-button>
+</form>

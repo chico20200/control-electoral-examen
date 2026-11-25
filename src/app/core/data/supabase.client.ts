@@ -11,6 +11,9 @@ export const SUPABASE = new InjectionToken<SupabaseClient>('SUPABASE', {
     createClient(environment.supabaseUrl, environment.supabaseClave, { auth: { detectSessionInUrl: false } }),
 });
 
+export const COLUMNAS_PERFIL =
+  'id, cedula, nombres, apellidos, telefono, correo, rol, recintoId:recinto_id, debeCambiarClave:debe_cambiar_clave';
+
 /** Llama a una Edge Function y convierte sus fallos en `ErrorApp`. */
 export async function invocar<T>(supabase: SupabaseClient, nombre: string, body: object): Promise<T> {
   const { data, error } = await supabase.functions.invoke(nombre, { body });

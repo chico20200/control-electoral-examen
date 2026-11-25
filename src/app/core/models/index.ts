@@ -30,6 +30,14 @@ export interface Jrv {
   veedorId: string | null;
 }
 
+/** Recinto con sus mesas creadas y su coordinador (R4). */
+export type RecintoResumen = Recinto & { mesas: number; coordinador: string | null };
+
+/** Mesa con su veedor y las actas ya registradas (R5). */
+export type MesaEstado = Jrv & { veedor: string | null; alcalde: boolean; prefecto: boolean };
+
+export type DatosUsuario = Pick<Perfil, 'cedula' | 'nombres' | 'apellidos' | 'telefono' | 'correo'>;
+
 export interface Candidatura {
   id: string;
   organizacion: string;

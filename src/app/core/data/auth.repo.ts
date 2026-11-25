@@ -4,7 +4,7 @@ import { isAuthRetryableFetchError } from '@supabase/supabase-js';
 import type { Perfil } from '../models';
 import { ErrorApp } from '../models/error-app';
 
-import { errorDe, invocar, SUPABASE } from './supabase.client';
+import { COLUMNAS_PERFIL, errorDe, invocar, SUPABASE } from './supabase.client';
 
 interface Tokens {
   access_token: string;
@@ -40,9 +40,7 @@ export class AuthRepo {
 
     const { data, error, status } = await this.supabase
       .from('perfiles')
-      .select(
-        'id, cedula, nombres, apellidos, telefono, correo, rol, recintoId:recinto_id, debeCambiarClave:debe_cambiar_clave',
-      )
+      .select(COLUMNAS_PERFIL)
       .eq('id', sesion.session.user.id)
       .maybeSingle();
     if (error) throw errorDe(status, error.message);
