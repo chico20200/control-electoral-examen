@@ -47,7 +47,7 @@ export class RecintosRepo {
     const { data, error, status } = await this.supabase
       .from('jrvs')
       .select(
-        'id, recintoId:recinto_id, numero, veedorId:veedor_id, veedor:perfiles!jrvs_veedor_id_fkey(nombres, apellidos), actas(dignidad)',
+        'id, recintoId:recinto_id, numero, veedorId:veedor_id, veedor:perfiles!jrvs_veedor_id_fkey(nombres, apellidos), actas(dignidad, total:total_sufragantes)',
       )
       .order('numero')
       .returns<
@@ -57,15 +57,18 @@ export class RecintosRepo {
           numero: number;
           veedorId: string | null;
           veedor: Nombre | null;
-          actas: { dignidad: string }[];
+          actas: { dignidad: string; total: number }[];
         }[]
       >();
     if (error) throw errorDe(status, error.message);
+    const totalDe = (actas: { dignidad: string; total: number }[], d: string) =>
+      actas.find((a) => a.dignidad === d)?.total ?? null;
     return data.map(({ veedor, actas, ...mesa }) => ({
       ...mesa,
       veedor: nombreDe(veedor),
       alcalde: actas.some((a) => a.dignidad === 'alcalde'),
       prefecto: actas.some((a) => a.dignidad === 'prefecto'),
+      totales: { alcalde: totalDe(actas, 'alcalde'), prefecto: totalDe(actas, 'prefecto') },
     }));
   }
 

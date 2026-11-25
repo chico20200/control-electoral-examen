@@ -80,9 +80,11 @@ export class ActaPage implements ViewWillEnter {
 
   async guardar(borrador: BorradorActa): Promise<void> {
     try {
-      await this.servicio.guardar(borrador);
+      const resultado = await this.servicio.guardar(borrador);
       await this.nav.navigateBack(this.volverA());
-      await this.notificacion.exito('Acta guardada.');
+      await this.notificacion.exito(
+        resultado === 'enviada' ? 'Acta guardada.' : 'Sin conexión: el acta quedó en el teléfono y se enviará sola.',
+      );
     } catch (e) {
       await this.notificacion.error(e);
     }

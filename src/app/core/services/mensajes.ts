@@ -23,6 +23,7 @@ const MENSAJES = new Map([
   ['CAMARA_NO_DISPONIBLE', 'No se pudo tomar la foto. Intenta de nuevo.'],
   ['GPS_DENEGADO', 'Permite el acceso a la ubicación en los ajustes del teléfono.'],
   ['GPS_NO_DISPONIBLE', 'No se obtuvo la ubicación. Activa el GPS e intenta de nuevo.'],
+  ['PENDIENTE_ENVIO', 'Esta acta está por enviar. Espera la conexión o descártala en «Actas por enviar».'],
   ['RED', 'Sin conexión. Revisa tu internet e intenta de nuevo.'],
 ]);
 

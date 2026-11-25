@@ -4,6 +4,8 @@ import { IonButton, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/a
 
 import type { Rol } from '../../core/models';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificacionService } from '../../core/services/notificacion.service';
+import { SyncService } from '../../core/services/sync.service';
 
 const TITULOS: Record<Rol, string> = {
   provincial: 'Coordinador provincial',
@@ -20,8 +22,12 @@ const OPCIONES: Record<Rol, { texto: string; ruta: string }[]> = {
   recinto: [
     { texto: 'Mesas', ruta: '/recinto/mesas' },
     { texto: 'Veedores', ruta: '/recinto/veedores' },
+    { texto: 'Actas por enviar', ruta: '/recinto/pendientes' },
   ],
-  veedor: [{ texto: 'Mis mesas', ruta: '/veedor/mesas' }],
+  veedor: [
+    { texto: 'Mis mesas', ruta: '/veedor/mesas' },
+    { texto: 'Actas por enviar', ruta: '/veedor/pendientes' },
+  ],
 };
 
 /** Pantalla inicial por rol. */
@@ -39,6 +45,11 @@ const OPCIONES: Record<Rol, { texto: string; ruta: string }[]> = {
       @for (o of opciones(); track o.ruta) {
         <ion-button expand="block" [routerLink]="o.ruta">{{ o.texto }}</ion-button>
       }
+      @if (sync.conflictos().length; as n) {
+        <ion-button expand="block" color="danger" [routerLink]="'/' + perfil()?.rol + '/pendientes'"
+          >{{ n }} acta(s) en conflicto</ion-button
+        >
+      }
       <ion-button expand="block" fill="outline" routerLink="/cambiar-clave">Cambiar contraseña</ion-button>
       <ion-button expand="block" fill="clear" (click)="salir()">Cerrar sesión</ion-button>
     </ion-content>
@@ -47,12 +58,18 @@ const OPCIONES: Record<Rol, { texto: string; ruta: string }[]> = {
 export class InicioPage {
   private readonly auth = inject(AuthService);
 
+  protected readonly sync = inject(SyncService);
+  private readonly notificacion = inject(NotificacionService);
+
   protected readonly perfil = this.auth.perfil;
   private readonly rol = computed(() => this.perfil()?.rol ?? 'veedor');
   protected readonly titulo = computed(() => TITULOS[this.rol()]);
   protected readonly opciones = computed(() => OPCIONES[this.rol()]);
 
-  salir(): Promise<void> {
-    return this.auth.salir();
+  async salir(): Promise<void> {
+    const n = this.sync.pendientes().length;
+    const aviso = `Tienes ${n} acta(s) por enviar. Se enviarán cuando vuelvas a entrar con este usuario, y para entrar necesitas conexión. ¿Cerrar sesión?`;
+    if (n && !(await this.notificacion.confirmar(aviso))) return;
+    await this.auth.salir();
   }
 }

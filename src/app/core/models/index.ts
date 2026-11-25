@@ -34,7 +34,13 @@ export interface Jrv {
 export type RecintoResumen = Recinto & { mesas: number; coordinador: string | null };
 
 /** Mesa con su veedor y las actas ya registradas (R5). */
-export type MesaEstado = Jrv & { veedor: string | null; alcalde: boolean; prefecto: boolean };
+export type MesaEstado = Jrv & {
+  veedor: string | null;
+  alcalde: boolean;
+  prefecto: boolean;
+  /** Total de sufragantes de cada acta; `null` si no está registrada. */
+  totales: Record<Dignidad, number | null>;
+};
 
 export type DatosUsuario = Pick<Perfil, 'cedula' | 'nombres' | 'apellidos' | 'telefono' | 'correo'>;
 
@@ -85,6 +91,19 @@ export type BorradorActa = Omit<Acta, 'id' | 'fotoPath' | 'version'> & {
   foto: Blob | null;
   fotoPath: string | null;
 };
+
+export type EstadoCola = 'pendiente' | 'sincronizado' | 'conflicto';
+
+/** Acta guardada en el teléfono. La foto se lee aparte, al enviarla. */
+export interface RegistroCola {
+  operacionId: string;
+  /** Número de mesa, para mostrarlo. */
+  mesa: number;
+  estado: EstadoCola;
+  /** Código del error cuando está en conflicto. */
+  motivo: string | null;
+  borrador: BorradorActa;
+}
 
 /** Lo escrito en el formulario; texto, porque puede estar incompleto. */
 export interface ValoresActa {

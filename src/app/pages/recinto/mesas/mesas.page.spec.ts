@@ -11,7 +11,15 @@ import { MesasPage } from './mesas.page';
 
 describe('MesasPage (R5)', () => {
   it('permite corregir las actas registradas, no las pendientes', () => {
-    const mesa = { id: 'm1', numero: 1, alcalde: true, prefecto: false, veedorId: null, veedor: null };
+    const mesa = {
+      id: 'm1',
+      numero: 1,
+      alcalde: true,
+      prefecto: false,
+      totales: { alcalde: 64, prefecto: null },
+      veedorId: null,
+      veedor: null,
+    };
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -32,6 +40,8 @@ describe('MesasPage (R5)', () => {
     const enlaces = fixture.debugElement.queryAll(By.directive(RouterLink)).map((e) => e.injector.get(RouterLink));
     expect(enlaces.map((e) => e.urlTree?.toString())).toEqual(['/recinto/mesas/m1/alcalde']);
     expect(raiz.querySelector('ion-button')?.textContent?.trim()).toBe('Corregir alcalde');
+    expect(raiz.textContent).toContain('Alcalde: 64 sufragantes');
+    expect(raiz.textContent?.match(/sufragantes/g)).toHaveLength(1);
     expect(raiz.querySelector('ion-badge')?.textContent?.trim()).toBe('Prefecto: pendiente');
   });
 });

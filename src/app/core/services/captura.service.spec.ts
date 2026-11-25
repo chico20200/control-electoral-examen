@@ -58,14 +58,14 @@ describe('CapturaService (R7)', () => {
   it('devuelve la ubicación con 15 s de espera', async () => {
     disp.posicion.mockResolvedValue({ lat: -0.2, lng: -78.5, precisionM: 8 });
     expect(await captura.ubicacion()).toEqual({ lat: -0.2, lng: -78.5, precisionM: 8 });
-    expect(disp.posicion).toHaveBeenCalledWith(true, 15000);
+    expect(disp.posicion).toHaveBeenCalledWith(true, 30000);
   });
 
   it('con permiso aproximado pide ubicación aproximada', async () => {
     disp.permisoUbicacion.mockResolvedValue('aproximada');
     disp.posicion.mockResolvedValue({ lat: 0, lng: 0, precisionM: 2000 });
     await captura.ubicacion();
-    expect(disp.posicion).toHaveBeenCalledWith(false, 15000);
+    expect(disp.posicion).toHaveBeenCalledWith(false, 30000);
   });
 
   it('GPS denegado, en el permiso o al pedir la posición', async () => {

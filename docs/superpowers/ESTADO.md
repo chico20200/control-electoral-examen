@@ -31,10 +31,10 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | 3 | Edge Functions de cuentas | ✅ | c7c6c42 |
 | 4 | Validadores | ✅ | 81d48a7 |
 | 5 | Acceso, guards y navegación | ✅ | baa44a6 |
-| 6 | Coordinadores | 🟡 | |
+| 6 | Coordinadores | ✅ | 3ebd5d8 |
 | 7 | Captura y actas | ✅ | 2d1caa3 |
-| 8 | Dashboard provincial | 🟡 | |
-| 9 | Offline y sincronización | ⬜ | |
+| 8 | Dashboard provincial | ✅ | 0f78b36 |
+| 9 | Offline y sincronización | 🟡 | |
 | 10 | Despliegue y entrega | ⬜ | |
 
 ## Decisiones
@@ -76,6 +76,10 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | D33 | 2026-11-25 | HTTP hacia `127.0.0.1` permitido solo en el APK debug | Probar por USB contra Supabase local; el APK final usará HTTPS | Acordada (técnica) |
 | D34 | 2026-11-25 | Adelantar el despliegue en la nube (tarea 10) y probar la tarea 7 contra ella | Pedido del estudiante; el ingreso local falló porque el contenedor de Edge Functions estaba detenido y la puerta de enlace respondía 503 | Acordada |
 | D35 | 2026-11-25 | El porcentaje se calcula sobre los votos por candidatura, sin blancos ni nulos, y se indica en pantalla | R4 no fija la base del cálculo | Acordada (técnica) |
+| D36 | 2026-11-25 | Un acta en cola no se puede volver a abrir: se espera el envío o se descarta | Reabrirla podía perder la foto en cola | Acordada (técnica) |
+| D37 | 2026-11-25 | Los rechazos definitivos del servidor (conflicto, permiso, datos) quedan «En conflicto», con foto y motivo, sin reintento; los de red, sesión o servidor siguen pendientes y se reintentan cada 30 s | ADR-006; reasignación con acta en cola | Acordada (técnica) |
+| D38 | 2026-11-25 | Espera del GPS de 15 a 30 s y `allowBackup=false` | Sin red el GPS tarda más; la cola no debe copiarse a la nube de Google | Acordada (técnica) |
+| D39 | 2026-11-25 | En el navegador no hay cola offline | SQLite es nativo; la app se entrega como APK | Acordada (técnica) |
 
 Si una decisión contradice un ADR aceptado, se escribe un ADR de reemplazo en `docs/adr/`.
 
@@ -101,7 +105,7 @@ Si una decisión contradice un ADR aceptado, se escribe un ADR de reemplazo en `
 |---|---|---|---|---|
 | 1 | 23/11/2026|Se abrió correactamente la página blank en escritorio y celular |Ninguna |img_1.png, img_2.png|
 
-**Commit sugerido:** `chore: proyecto base Ionic Angular` · **Hash:** 
+**Commit sugerido:** `chore: proyecto base Ionic Angular` · **Hash:** 034e2d8
 commit hash: 034e2d8
 ### Tarea 2: Base de datos, RLS y RPC
 
@@ -167,8 +171,9 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 |---|---|---|---|---|
 | 1 | 22:47 24/11/2026| 32 de los 32 test pasarón como se espera | | 01-pruebas-pass.img|
 | 2 | 22:47 24/11/2026| 31 de los 32 test pasarón como se espera al cambiar un dígito en el caso de pichincha | | 02-fallo-provocado.img|
+| 3 | 2026-11-24, 22:23 | ✅ | `node --test`: 9 pass, 0 fail; correos de confirmación y de código en Mailpit (22:23). Los intentos 1 y 2 corresponden a la tarea 4 | `docs/evidencias/tarea-03/` (3 capturas) |
 
-**Commit sugerido:** `feat: funciones de cuentas` · **Hash:** 
+**Commit sugerido:** `feat: funciones de cuentas` · **Hash:** c7c6c42
 
 ### Tarea 4: Validadores
 
@@ -194,9 +199,10 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
-| 1 | | | | |
+| 1 | 2026-11-24, 22:38 (inicio visible en la captura) | ✅ | `Tests 32 passed (32)` en 4 archivos | `docs/evidencias/tarea-04/01-pruebas-pass.png` |
+| 2 | 2026-11-24, captura de las 22:46 | ✅ fallo provocado detectado | Al cambiar a `1710034066` en «Pichincha», falla solo ese caso. Estos dos intentos también figuran en el registro de la tarea 3 | `docs/evidencias/tarea-04/02-fallo-provocado.png` |
 
-**Commit sugerido:** `feat: validadores de cédula y acta` · **Hash:** 
+**Commit sugerido:** `feat: validadores de cédula y acta` · **Hash:** 81d48a7
 
 ### Tarea 5: Acceso, guards y navegación
 
@@ -225,9 +231,9 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
-| 1 | | | | |
+| 1 | 2026-11-24, capturas de 23:24 a 23:29 | ✅ con observaciones | Clave incorrecta: «Cédula o contraseña incorrectas». Primer ingreso: exige cambiar la clave. Después, «Contraseña actualizada» y pantalla del veedor. Sin evidencia en las capturas: la barra de direcciones en `03` y `04` (redirección), el código de Mailpit en `05` (muestra «Contraseña actualizada»), el rechazo de `Ecuador2026` como nueva y el ingreso de los otros dos roles | `docs/evidencias/tarea-05/` (5 capturas) |
 
-**Commit sugerido:** `feat: acceso y guards` · **Hash:** 
+**Commit sugerido:** `feat: acceso y guards` · **Hash:** baa44a6
 
 ### Tarea 6: Coordinadores
 
@@ -256,9 +262,9 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
-| 1 | | | | |
+| 1 | 2026-11-24 23:59 a 2026-11-25 00:06 (capturas) | ✅ con observaciones | Recinto «Maldonado School» con 3 JRV y sin asignar; cédula `0900000009` rechazada; coordinador asignado y visible en la lista; mesas 1 y 2 de «Sin asignar» a Andres Qzada y Víctor Prueba. Sin evidencia en las capturas: el cambio de un veedor ya asignado con su confirmación | `docs/evidencias/tarea-06/` (5 capturas) |
 
-**Commit sugerido:** `feat: gestión de recintos y usuarios` · **Hash:** 
+**Commit sugerido:** `feat: gestión de recintos y usuarios` · **Hash:** 3ebd5d8
 
 ### Tarea 7: Captura y actas
 
@@ -320,26 +326,37 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
 | 1 | 2026-11-25, 10:57–10:58 | ✅ con observaciones | Alcalde: 11, 12, 13, 14, 14 = 64, consolidado y Calderón; Centro 0 y 0.0 %; avance 4 de 10 y 4 coordenadas (también hay acta de prefecto en la mesa 2)| `docs/evidencias/tarea-08/` (4 capturas) |
-**Commit sugerido:** `feat: dashboard provincial` · **Hash:** 
+**Commit sugerido:** `feat: dashboard provincial` · **Hash:** 0f78b36
 
 ### Tarea 9: Offline y sincronización
 
-**Archivos entregados:** _pendiente_
+**Archivos entregados:** en `src/app`: `core/data/{sqlite,local.repo}.ts`, `core/services/{red,sync}.service.ts` con specs, `pages/pendientes/` (para veedor y coordinador, por eso no está en `pages/veedor`). Modificados: `ActasService` y su spec, `captura.service` y su spec, modelos, mensajes, rutas, inicio, mis mesas, acta, `app.component.ts`, `main.ts` y Manifest.
 
-**Pruebas automáticas (agente):** _pendiente_
+**Pruebas automáticas (agente), 2026-11-25:** RED: no compila, faltan los módulos · primera ejecución 165/166 y un error no capturado: la prueba «se envía sola» daba por buena una lista vacía (error de la prueba) y Angular llamaba `ngOnDestroy` en el proxy de Capacitor (error del código). Corregidos: GREEN 166/166. Lint: un error de orden de imports, corregido. Nueve sabotajes detectados: reintentar conflictos (1 falla), envíos simultáneos (1), no comprobar la sesión (1), detener la cola (6), ignorar el retorno de la red (1), encolar cualquier error (2), abrir como nueva un acta registrada (1), abrir un acta en cola (1), seguir tras salir (1). Restaurado: 166/166. `LocalRepo` real contra SQLite de Node: 11/11 (persistencia, foto idéntica, sin duplicados, conflicto). `cap sync` y Gradle sin errores con el plugin (verificación 1 de ADR-006); APK apuntando a la nube. Primera prueba del estudiante (11:29–11:37): informó que no veía el conflicto. El agente leyó la cola del teléfono y la nube: dos actas «sincronizado» y **dos en «conflicto»** (`CONFLICTO`; bases 3 y 4), y el servidor quedó con lo del coordinador (versión 5, total 19), sin las operaciones en conflicto. Esto confirma el plugin nativo y la protección; el defecto era de interfaz: el conflicto solo se veía en «Actas por enviar». Corregido con aviso en «Mis mesas» e inicio: GREEN 168/168; sin el aviso falla 1 prueba (el RED se comprobó quitando el aviso, porque las ejecuciones previas no corrieron: dos veces las cortó el límite de memoria). El aviso no se ha probado en el teléfono. A pedido del estudiante, la lista de mesas del coordinador muestra el total de sufragantes de cada acta (`recintos.repo.ts`, `pages/recinto/mesas`): RED 1 falla → GREEN 168/168; no se ha probado contra la nube.
 
-**Tu prueba:**
-1. Modo avión: registrar acta y ver que queda pendiente.
-2. Quitar modo avión: se envía sola.
-3. Corregir antes como coordinador: debe quedar en conflicto.
+**Para qué sirve:** demuestra R10 y ADR-006: el acta, la foto y el GPS no se pierden sin red, se envían solos y no pisan una corrección del coordinador.
+
+**Cómo está construida:** los specs simulan red, servidor y cola con fallos controlados; `LocalRepo` se prueba con una base SQLite real. Tu prueba usa el modo avión y el plugin nativo contra la nube.
+
+**Por qué es fiable:** cada regla tiene un sabotaje que la hace fallar, y el conflicto lo decide el servidor (`version_base`), no la pantalla.
+
+**Qué no cubre:** navegador (sin cola), iniciar sesión sin red, ni abrir por primera vez una mesa que nunca se consultó con conexión. La base local no está cifrada. No hay envío con la app cerrada: se envía al abrirla.
+
+**Tu prueba** (se necesita otro equipo para el coordinador: en la PC, `npx ng serve --configuration production` y abrir `http://localhost:4200`; apunta a la nube):
+1. Instalar el APK. En la PC, como coordinador (`2410034066`), asignar la mesa 3 a Víctor Prueba. En el teléfono, como veedor (`3010034068`), abrir «Mis mesas» con conexión y esperar unos segundos.
+2. **Modo avión** (Wi-Fi también apagado), cerca de una ventana. Registrar alcalde de la mesa 3: 2, 2, 2, 2, 2, blancos 0, nulos 0, total 10, con foto y GPS. Debe decir «quedó en el teléfono» y «Por enviar». Cerrar la app por completo y abrirla: sigue pendiente.
+3. **Quitar el modo avión** sin tocar nada: en menos de un minuto pasa a «Sincronizada». En «Mis mesas» aparece «Registrada».
+4. **Conflicto:** con conexión, abrir «Mis mesas» y esperar. Modo avión: corregir alcalde de la mesa 3 a 3, 2, 2, 2, 2 y total 11, sin foto nueva. Mientras, en la PC, el coordinador corrige esa acta a 5, 2, 2, 2, 2 y total 13. Quitar el modo avión: debe quedar «En conflicto», y en la PC el acta sigue en 13.
+5. Con una cola pendiente, «Cerrar sesión» pide confirmación (se puede hacer en el paso 2 y cancelar).
 
 **Se aprueba si / evidencia:** Los 4 pasos de ADR-006; capturas de antes y después.
 
-**Capturas recomendadas:** Pendiente en modo avión; sincronizado; conflicto. Mejor en video.
+**Capturas recomendadas** (`docs/evidencias/tarea-09/`): `01-pendiente-modo-avion.png`, `02-sincronizada.png`, `03-conflicto.png`, `04-coordinador-intacto.png`.
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
-| 1 | | | | |
+| 1 | 2026-11-25, 11:29–11:37 | ❌ parcial | Sin red: acta en el teléfono y «Por enviar» (11:29); se sincronizó. Dos actas quedaron en conflicto y la nube conservó lo del coordinador (total 19), pero el conflicto no se veía fuera de «Actas por enviar». Corregido | `01-pendiente-modo-avion.png`, `02-sincronizada.png` (11:33, aún en modo avión: una sincronizada y una pendiente) y lectura de la cola y la nube |
+| 2 | 2026-11-25, 11:41 | ✅ con observaciones | Aviso «2 acta(s) en conflicto» en el inicio; detalle con dos sincronizadas (10 y 13) y dos en conflicto (13 y 17); en la PC el acta sigue en 19. Sin evidencia: confirmación al cerrar sesión con cola, cierre y reapertura de la app, y el total en la lista de mesas del coordinador (añadido a las 11:46) | `docs/evidencias/tarea-09/` (`03`, `04`, `05`) |
 
 **Commit sugerido:** `feat: cola offline` · **Hash:** 
 

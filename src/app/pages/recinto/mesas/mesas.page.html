@@ -16,7 +16,7 @@
       <ion-label>
         <h2>Mesa {{ m.numero }}</h2>
         <p>
-          @if (m.alcalde) {
+          @if (m.alcalde) { Alcalde: {{ m.totales.alcalde }} sufragantes
           <ion-button size="small" fill="outline" [routerLink]="['/recinto/mesas', m.id, 'alcalde']"
             >Corregir alcalde</ion-button
           >
@@ -25,7 +25,7 @@
           }
         </p>
         <p>
-          @if (m.prefecto) {
+          @if (m.prefecto) { Prefecto: {{ m.totales.prefecto }} sufragantes
           <ion-button size="small" fill="outline" [routerLink]="['/recinto/mesas', m.id, 'prefecto']"
             >Corregir prefecto</ion-button
           >

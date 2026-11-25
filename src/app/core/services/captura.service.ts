@@ -6,7 +6,8 @@ import { ErrorApp } from '../models/error-app';
 import { DISPOSITIVO } from './dispositivo';
 import { UMBRAL_NITIDEZ, varianzaLaplaciano } from './nitidez';
 
-const ESPERA_GPS_MS = 15000;
+// Sin red el GPS no recibe ayuda y tarda más.
+const ESPERA_GPS_MS = 30000;
 
 const codigoDe = (e: unknown) => (e as { code?: unknown } | null)?.code;
 
