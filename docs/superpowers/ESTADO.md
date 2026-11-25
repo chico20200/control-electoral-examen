@@ -28,8 +28,8 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 |---|---|---|---|
 | 1 | Proyecto base | ✅ | 034e2d8 |
 | 2 | Base de datos, RLS y RPC | ✅ | 92f4225 |
-| 3 | Edge Functions de cuentas | 🟡 | |
-| 4 | Validadores | ⬜ | |
+| 3 | Edge Functions de cuentas | ✅ | c7c6c42 |
+| 4 | Validadores | 🟡 | |
 | 5 | Acceso, guards y navegación | ⬜ | |
 | 6 | Coordinadores | ⬜ | |
 | 7 | Captura y actas | ⬜ | |
@@ -55,14 +55,17 @@ Estados: ⬜ sin iniciar · 🔵 en curso · 🟡 lista para probar · ✅ aprob
 | D12 | 2026-11-23 | JDK 21 (`~/.jdks/jbr-21.0.11`) para compilar Android | Gradle 8.14.3 falla con el Java 25 de Android Studio | Acordada (técnica) |
 | D13 | 2026-11-23 | Pruebas unitarias con Vitest vía `ng test`; se quitó Playwright | Es lo que genera Ionic 9; ADR-005 excluye E2E | Acordada (técnica) |
 | D14 | 2026-11-23 | ADR movidos a `docs/adr/` y renombrados con título corto | Sección 5.2 y Anexo A.2; contenido intacto | Acordada (técnica) |
-| D15 | 2026-11-23 | `docs/superpowers/` (plan y ESTADO) no se sube; el resto de `docs/` sí | Pedido del estudiante; los ADR deben estar en el repo | Acordada |
+| D15 | 2026-11-23 | `docs/superpowers/` (plan y ESTADO) no se sube; el resto de `docs/` sí | Pedido del estudiante; los ADR deben estar en el repo | Reemplazada por D23 |
 | D16 | 2026-11-23 | Tabla `operaciones` con cada envío aplicado | Un reintento no duplica ni da falso conflicto, aunque el coordinador ya haya corregido | Acordada (técnica) |
 | D17 | 2026-11-23 | El acta exige foto existente de su mesa y GPS; errores nuevos `VOTOS` y `FOTO` | R7, validado en el servidor | Acordada (técnica) |
 | D18 | 2026-11-23 | El id del acta lo genera el servidor; el envío se identifica con `operacion_id` | Evita ids duplicados entre dispositivos | Acordada (técnica) |
-| D19 | 2026-11-23 | `.claude/` no se sube a git | Guía de trabajo local, como `docs/superpowers/` | Propuesta |
+| D19 | 2026-11-23 | `.claude/` no se sube a git | Guía de trabajo local, como `docs/superpowers/` | Reemplazada por D23 |
 | D20 | 2026-11-23 | Las funciones verifican la sesión por dentro (`verify_jwt = false` + `getUser`) | No depende del tipo de clave del proyecto y da errores uniformes | Acordada (técnica) |
 | D21 | 2026-11-23 | Si falla el perfil o el correo, se borra la cuenta recién creada | Evita cuentas a medias | Acordada (técnica) |
 | D22 | 2026-11-23 | Cambiar o recuperar la clave cierra las demás sesiones | Un acceso robado no puede renovarse | Acordada (técnica) |
+| D23 | 2026-11-24 | Por ahora `.claude/`, el plan y ESTADO se suben a git; solo `DEFENSA.md` queda fuera. Se corrige al final | Pedido del estudiante; reemplaza D15 y D19 | Acordada (provisional) |
+| D24 | 2026-11-24 | `enteroNoNegativo` acepta como máximo 6 cifras | Mismo rango que `guardar_acta` | Acordada (técnica) |
+| D25 | 2026-11-24 | `totalesValidator` no informa error mientras falte o sea inválido un campo | Evita dos mensajes por el mismo problema; `enteroNoNegativo` ya bloquea el formulario | Acordada (técnica) |
 
 Si una decisión contradice un ADR aceptado, se escribe un ADR de reemplazo en `docs/adr/`.
 
@@ -126,7 +129,7 @@ commit hash: 92f4225
 
 **Archivos entregados:** `supabase/functions/` (5 funciones, `_shared/` y `tests/cuentas.test.mjs`), `supabase/templates/` (2), `scripts/crear-provincial.mjs`, `supabase/config.toml`.
 
-**Pruebas automáticas (agente):** 2026-11-23: RED 0/9 · GREEN 9/9, repetido · `test db` 55/55 · lint y formato sin errores (antes, 5 archivos por formatear) · script del provincial probado en local. Sabotajes: el primero no se detectó porque el runtime tenía la función en caché; al reiniciarlo, permitir que un veedor cree cuentas falla 1 prueba, y permitir `Ecuador2026` como clave nueva falla 6. Restaurado: 9/9. La nube no se ha tocado.
+**Pruebas automáticas (agente):** 2026-11-23: RED 0/9 · GREEN 9/9, repetido · `test db` 55/55 · lint y formato sin errores (antes, 5 archivos por formatear) · script del provincial probado en local. Sabotajes: el primero no se detectó porque el runtime tenía la función en caché; al reiniciarlo, permitir que un veedor cree cuentas falla 1 prueba, y permitir `Ecuador2026` como clave nueva falla 6. Restaurado: 9/9. La nube no se ha tocado. · 2026-11-24 22:21: el contenedor `supabase_edge_runtime_Examen` estaba detenido (señal 15, causa no determinada); tras `docker start`, 9/9 (agente; no sustituye la prueba del estudiante).
 
 **Para qué sirve:** demuestra que no hay autorregistro y que cada rol solo crea las cuentas que le corresponden (R2), y que login, cambio obligatorio y recuperación son seguros (R3).
 
@@ -152,23 +155,32 @@ Las pruebas van en orden: el provincial activado crea al coordinador, y este al 
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|
-| 1 | | | | |
+| 1 | 22:47 24/11/2026| 32 de los 32 test pasarón como se espera | | 01-pruebas-pass.img|
+| 2 | 22:47 24/11/2026| 31 de los 32 test pasarón como se espera al cambiar un dígito en el caso de pichincha | | 02-fallo-provocado.img|
 
 **Commit sugerido:** `feat: funciones de cuentas` · **Hash:** 
 
 ### Tarea 4: Validadores
 
-**Archivos entregados:** _pendiente_
+**Archivos entregados:** `src/app/core/validators/{cedula,acta}.validator.ts` y sus `.spec.ts`.
 
-**Pruebas automáticas (agente):** _pendiente_
+**Pruebas automáticas (agente), 2026-11-24:** RED 1: no compila, faltan los módulos · RED 2 con funciones vacías: 22 fallan y 10 pasan (casos que esperan `null`, entre otros) · GREEN 32/32 · lint: 2 errores (`import type`), corregidos · build correcto. Intermedio: un caso propio estaba mal etiquetado (`2510034065` ya tiene el verificador correcto); corregido. Sabotajes, todos detectados: tercer dígito hasta 6 (1 falla), provincia 25 (1), módulo 10 sin restar 9 (5), suma sin nulos (3), sin límite de cifras (1). Un primer intento de sabotajes no mostró resultados por los colores de la salida; se repitió. Final 22:34: 32/32.
+
+**Para qué sirve:** comprueba que la cédula se valida de verdad (R2) y que un acta cuyos números no cuadran se detecta en el formulario (R6).
+
+**Cómo está construida:** pruebas unitarias con Vitest; cada `it.each` es una tabla de casos. Se crean controles de Reactive Forms con un valor, se llama al validador y se compara con `toEqual` o `toBeNull`. No necesita red ni base.
+
+**Por qué es fiable:** incluye casos válidos e inválidos; las provincias 00 y 25 y el tercer dígito 6 tienen verificador correcto, así que solo los detiene la regla que nombran. Cinco sabotajes la hicieron fallar.
+
+**Qué no cubre:** que la cédula pertenezca a alguien, los mensajes en pantalla (tareas 6 y 7) ni la protección del servidor, que es independiente (`crear-usuario` y `guardar_acta`, tareas 2 y 3).
 
 **Tu prueba:**
-1. Ejecutar `ng test` con el comando del plan.
-2. Cambiar un dígito de una cédula del test, ver que falla y deshacer.
+1. Ejecutar `date; npx ng test --no-watch`: debe terminar con `Tests 32 passed`.
+2. En `cedula.validator.spec.ts`, cambiar `1710034065` por `1710034066` en el caso «Pichincha», repetir (`1 failed`) y deshacer.
 
 **Se aprueba si / evidencia:** PASS, y FAIL al alterarlo; captura.
 
-**Capturas recomendadas:** Resumen de `ng test` en verde y el fallo al alterar la cédula.
+**Capturas recomendadas:** `01-pruebas-pass.png` y `02-fallo-provocado.png`, en `docs/evidencias/tarea-04/`.
 
 | Intento | Fecha y hora | Resultado | Observaciones | Evidencia |
 |---|---|---|---|---|

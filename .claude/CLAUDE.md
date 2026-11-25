@@ -18,7 +18,7 @@ Examen práctico individual (ESFOT), app Ionic Angular + Capacitor + Supabase. *
 - No tocar el proyecto Supabase de la nube sin permiso expreso. No pedir contraseñas por el chat.
 - No borrar ni cambiar lo que el estudiante escribió en los registros.
 - Si algo contradice un ADR, proponer un ADR de reemplazo.
-- `docs/superpowers/` y `.claude/` no se suben a git; el resto de `docs/` sí.
+- Por ahora `docs/superpowers/` y `.claude/` se suben a git, salvo `docs/superpowers/DEFENSA.md` (D23). Revisar antes de la entrega.
 
 ## Reglas técnicas
 - Páginas → servicios → repositorios → Supabase. `@supabase/supabase-js` solo en `src/app/core/data`.
