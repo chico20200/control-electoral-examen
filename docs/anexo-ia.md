@@ -19,6 +19,7 @@
 - «no me deja ingresar, me dice error inesperado. Hagamos la todo en la nube de supabase»
 - «El corrdinador modificó y no dió conflicto con el veedor, solo tomo al coordinador como ultima decición correcta…»
 - «El coordinador no puede saber los totales a menos que entre a corregir. Haz que en la lista se vea el total»
+- «Ayúdame a mejorar los estilos, y ponerme un ícono en la aplicación para que sea difernciado…»
 
 ## Qué propuso, qué falló y cómo se verificó
 
@@ -33,6 +34,7 @@
 | 7 | Cámara, nitidez y actas | Un script falló y la computadora se quedó sin memoria; la IA no comprobó que el servidor local estuviera activo | 129/129 y prueba en el teléfono |
 | 8 | Dashboard | Sin fallos en las pruebas | 137/137 y suma manual del estudiante |
 | 9 | Cola offline | Una prueba aceptaba una lista vacía; el conflicto no se veía en «Mis mesas», detectado por la prueba del estudiante | 168/168 y prueba en el teléfono |
+| 10 | Documentos, ícono y tema visual | Un mensaje de error decía «Revisa la dirección» cuando el fallo era el usuario SMTP de Gmail; se corrigió el texto y el estudiante la configuración | 174/174, correos reales en la nube y pantallas revisadas en navegador |
 
 **Revisión independiente:** un agente distinto revisó el proyecto en modo lectura. No halló problemas críticos; se corrigió un caso en que una caída del servidor (502–504) impedía encolar el acta. Lo no corregido está en las limitaciones del README y en `superpowers/ESTADO.md`.
 
