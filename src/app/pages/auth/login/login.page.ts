@@ -1,17 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  IonButton,
-  IonContent,
-  IonHeader,
-  IonInput,
-  IonInputPasswordToggle,
-  IonSpinner,
-  IonTitle,
-  IonToolbar,
-  NavController,
-} from '@ionic/angular';
+import { IonButton, IonContent, IonInput, IonInputPasswordToggle, IonSpinner, NavController } from '@ionic/angular';
 
 import { rutaInicial } from '../../../core/guards/ruta-inicial';
 import { AuthService } from '../../../core/services/auth.service';
@@ -21,18 +11,7 @@ import { cedulaValidator } from '../../../core/validators/cedula.validator';
 @Component({
   selector: 'app-login',
   templateUrl: 'login.page.html',
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    IonButton,
-    IonContent,
-    IonHeader,
-    IonInput,
-    IonInputPasswordToggle,
-    IonSpinner,
-    IonTitle,
-    IonToolbar,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, IonButton, IonContent, IonInput, IonInputPasswordToggle, IonSpinner],
 })
 export class LoginPage {
   private readonly auth = inject(AuthService);

@@ -1,2 +1,54 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// Identidad: verde petróleo con acento ámbar, sin colores de organizaciones políticas.
+// `:root:root` supera la paleta oscura de Ionic, que usa `:root.md`.
+:root:root {
+  --marca: #0d4a52;
+  --marca-clara: #187a78;
+  --superficie: #ffffff;
+  --borde: #dbe4e5;
+
+  --ion-color-primary: #0f6266;
+  --ion-color-primary-rgb: 15, 98, 102;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #0d565a;
+  --ion-color-primary-tint: #277275;
+
+  --ion-background-color: #f3f6f6;
+  --ion-background-color-rgb: 243, 246, 246;
+  --ion-text-color: #14292c;
+  --ion-text-color-rgb: 20, 41, 44;
+  --ion-item-background: var(--superficie);
+}
+
+// Solo en modo claro: los tonos de Ionic no contrastan sobre blanco.
+@media (prefers-color-scheme: light) {
+  :root:root {
+    --ion-color-success: #1b7a3d;
+    --ion-color-success-rgb: 27, 122, 61;
+    --ion-color-success-contrast: #ffffff;
+    --ion-color-success-contrast-rgb: 255, 255, 255;
+    --ion-color-warning: #935700;
+    --ion-color-warning-rgb: 147, 87, 0;
+    --ion-color-warning-contrast: #ffffff;
+    --ion-color-warning-contrast-rgb: 255, 255, 255;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:root {
+    --superficie: #172629;
+    --borde: #2a3d40;
+
+    --ion-color-primary: #4fbdb5;
+    --ion-color-primary-rgb: 79, 189, 181;
+    --ion-color-primary-contrast: #04201f;
+    --ion-color-primary-contrast-rgb: 4, 32, 31;
+    --ion-color-primary-shade: #46a69f;
+    --ion-color-primary-tint: #61c4bc;
+
+    --ion-background-color: #0e191b;
+    --ion-background-color-rgb: 14, 25, 27;
+    --ion-text-color: #e8f0f0;
+    --ion-text-color-rgb: 232, 240, 240;
+  }
+}

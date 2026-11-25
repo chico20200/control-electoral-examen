@@ -45,3 +45,134 @@
   max-width: 480px;
   margin: 0 auto;
 }
+
+/* Encabezado: color de marca también en modo oscuro. */
+ion-header ion-toolbar.ion-color-primary {
+  --ion-color-base: var(--marca) !important;
+  --ion-color-contrast: #fff !important;
+}
+
+ion-title {
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+ion-button {
+  --border-radius: 12px;
+  min-height: 46px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+ion-header ion-button,
+ion-button[size='small'] {
+  min-height: 36px;
+}
+
+ion-input.md,
+ion-select.md {
+  --border-radius: 12px;
+}
+
+ion-segment-button {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+ion-progress-bar {
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 8px;
+}
+
+/* Listas como tarjetas. */
+ion-content ion-list.md {
+  max-width: 720px;
+  margin: 12px auto;
+  padding: 0 12px;
+  background: transparent;
+}
+
+ion-content.ion-padding ion-list.md {
+  padding: 0;
+}
+
+ion-list ion-item {
+  --border-radius: 14px;
+  --inner-border-width: 0;
+  margin-bottom: 10px;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+ion-list ion-item-divider {
+  --background: transparent;
+  --color: var(--ion-color-primary);
+  border: 0;
+  font-weight: 700;
+}
+
+ion-list ion-item ion-note {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Pantalla de ingreso. */
+.portada {
+  margin: -16px -16px 24px;
+  padding: calc(var(--ion-safe-area-top, 0px) + 48px) 16px 36px;
+  border-radius: 0 0 28px 28px;
+  background: linear-gradient(150deg, var(--marca-clara), var(--marca));
+  color: #fff;
+  text-align: center;
+
+  img {
+    width: 96px;
+    height: 96px;
+    border: 2px solid rgb(255 255 255 / 25%);
+    border-radius: 24px;
+  }
+
+  h1 {
+    margin: 14px 0 4px;
+  }
+
+  p {
+    margin: 0;
+    opacity: 0.9;
+  }
+}
+
+/* Saludo del inicio. */
+.saludo {
+  max-width: 720px;
+  margin: 4px auto 16px;
+  padding: 20px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--marca-clara), var(--marca));
+  color: #fff;
+
+  h1 {
+    margin: 2px 0 0;
+  }
+
+  p {
+    margin: 0;
+    opacity: 0.85;
+  }
+}
+
+.menu ion-icon {
+  margin-inline-end: 16px;
+}

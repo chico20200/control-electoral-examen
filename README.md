@@ -110,7 +110,7 @@ Cuentas ficticias en la nube, recinto «Colegio Demo Calderón». La contraseña
 
 | Rol | Cédula | Contraseña |
 |---|---|---|
-| Coordinador provincial | `    ` | "12345678" |
+| Coordinador provincial | `1710034065` | "12345678" |
 | Coordinador de recinto | `2410034066` | "12345678" |
 | Veedor | `3010034068` | "12345678" |
 
